@@ -8,7 +8,7 @@
 ## 1. Technology Stack  
 - **Backend Framework**: .NET Core (latest LTS version)  
 - **Language**: C#  
-- **Database**: Microsoft SQL Server (MSSQL)  
+- **Database**: SQLite  
 - **ORM**: Entity Framework Core  
 - **Frontend**: ASP.NET Core MVC / Razor Pages (minimal UI)  
 - **API Layer**: RESTful APIs using ASP.NET Core Web API  
@@ -32,7 +32,7 @@
   - Repository pattern for database operations  
 
 - **Database Layer**  
-  - MSSQL schema with tables for Organizations, Applications, Gateways, Transactions, and Logs  
+  - SQLite database with tables for Organizations, Applications, Gateways, Transactions, and Logs  
 
 ---
 
@@ -42,42 +42,45 @@
 
 **Organizations**  
 - OrganizationId (PK, GUID)  
-- Name (nvarchar)  
-- CreatedDate (datetime)  
+- Name (TEXT)  
+- CreatedDate (DATETIME)  
 
 **Applications**  
 - ApplicationId (PK, GUID)  
 - OrganizationId (FK)  
-- ClientId (nvarchar)  
-- AccessLocation (nvarchar)  
-- CreatedDate (datetime)  
+- ClientId (TEXT)  
+- AccessLocation (TEXT)  
+- CreatedDate (DATETIME)  
+
+**Clients**  
+- ClientId (PK, GUID)  
+- OrganizationId (FK)  
+- ApplicationId (FK)
+- AccessToken (TEXT)  
+- SecretToken (TEXT)  
+- CreatedDate (DATETIME)  
+- ExpiryDate (DATETIME)  
 
 **Gateways**  
 - GatewayId (PK, GUID)  
-- Name (nvarchar)  
-- Status (nvarchar)  
+- Name (TEXT)  
+- Status (TEXT)  
 
 **Transactions**  
 - TransactionId (PK, GUID)  
 - ApplicationId (FK)
 - GatewayId (FK)
-- Amount (decimal)  
-- Status (nvarchar)  
-- CreatedDate (datetime)  
+- Amount (REAL)  
+- Status (TEXT)  
+- CreatedDate (DATETIME)  
 
 **TransactionDetails**  
 - TransactionDetailId (PK, GUID)  
-- TransactionId (FK, nullable)  
-- Status (nvarchar)  
-- Message (nvarchar)  
-- Data (nvarchar)  
-- CreatedDate (datetime)  
-
-**ErrorLogs**  
-- LogId (PK, GUID)  
-- TransactionId (FK, nullable)  
-- ErrorMessage (nvarchar)  
-- Timestamp (datetime)  
+- TransactionId (FK)  
+- Status (TEXT)  
+- Message (TEXT)  
+- Data (TEXT, nullable)  
+- CreatedDate (DATETIME)  
 
 ---
 
@@ -146,7 +149,7 @@
 
 ## 8. Acceptance Criteria (Technical)  
 - REST APIs functional with CRUD operations  
-- Entity Framework Core successfully maps MSSQL schema  
+- Entity Framework Core successfully maps SQLite schema  
 - Admin role can manage organizations, applications, and gateways  
 - Manager role restricted to application CRUD and reporting  
 - Dummy gateway available for sandbox testing  
