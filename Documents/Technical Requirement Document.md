@@ -56,8 +56,8 @@
 - ClientId (PK, GUID)  
 - OrganizationId (FK)  
 - ApplicationId (FK)
-- AccessToken (TEXT)  
-- SecretToken (TEXT)  
+- Name (TEXT)  
+- SecretKey (TEXT)  
 - CreatedDate (DATETIME)  
 - ExpiryDate (DATETIME)  
 
