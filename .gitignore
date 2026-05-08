@@ -39,6 +39,10 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
+# Temporary Files generated for local testing
+# Uncomment below line to ignore the local test files generated
+#TmpFiles\ Files/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
