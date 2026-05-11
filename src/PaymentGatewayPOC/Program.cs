@@ -24,6 +24,25 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
+// Apply any pending EF Core migrations on startup.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        var context = services.GetRequiredService<PaymentGatewayPOC.Data.PaymentGatewayContext>();
+        context.Database.Migrate();
+        logger.LogInformation("Database migrated successfully on startup.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while migrating the database on startup.");
+        throw;
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

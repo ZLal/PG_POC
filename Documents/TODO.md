@@ -23,3 +23,4 @@
 - Create service layer with logging
 - Create API controllers for services
 - Add migration for database
+- Write code to run migration on application start
