@@ -1,11 +1,6 @@
 
 ## TODO
 
-- Configure database migrations
-
-- Run dotnet ef migrations add InitialCreate to create the database migration
-- Run dotnet ef database update to create the SQLite database
-
 
 ## Done
 
@@ -16,7 +11,7 @@
 - Create Entity Framework DbContext
 - Implement API endpoints
 - Create API controllers for CRUD operations
-
+- Configure database migrations
 
 ## Used prompts
 - dotnet new webapi -n PaymentGatewayPOC --no-https

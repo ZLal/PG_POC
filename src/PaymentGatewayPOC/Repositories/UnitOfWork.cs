@@ -62,7 +62,10 @@ public class UnitOfWork : IUnitOfWork
         try
         {
             await SaveChangesAsync();
-            await _transaction?.CommitAsync()!;
+            if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+            }
         }
         catch
         {
@@ -71,7 +74,10 @@ public class UnitOfWork : IUnitOfWork
         }
         finally
         {
-            await _transaction?.DisposeAsync()!;
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync();
+            }
             _transaction = null;
         }
     }
@@ -80,11 +86,17 @@ public class UnitOfWork : IUnitOfWork
     {
         try
         {
-            await _transaction?.RollbackAsync()!;
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+            }
         }
         finally
         {
-            await _transaction?.DisposeAsync()!;
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync();
+            }
             _transaction = null;
         }
     }
