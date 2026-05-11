@@ -16,3 +16,14 @@
 - Create Entity Framework DbContext
 - Implement API endpoints
 - Create API controllers for CRUD operations
+
+
+## Used prompts
+- dotnet new webapi -n PaymentGatewayPOC --no-https
+- Convert project from using minimal API to old style controller structure.
+- Modify this document to use SQLite instead of MSSQL database
+- Set up the database models
+- Clients model is missing in db context. Create model and update db context. Reanalize the technical requirement document for this.
+- Implement repository pattern for data access
+- Create service layer with logging
+- Create API controllers for services
