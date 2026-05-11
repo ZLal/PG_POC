@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PaymentGatewayPOC.Repositories;
 using PaymentGatewayPOC.Repositories.Interfaces;
+using PaymentGatewayPOC.Services;
+using PaymentGatewayPOC.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,13 @@ builder.Services.AddDbContext<PaymentGatewayPOC.Data.PaymentGatewayContext>(opti
 
 // Register repository pattern
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Register services with logging
+builder.Services.AddScoped<IOrganizationService, OrganizationService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IGatewayService, GatewayService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
