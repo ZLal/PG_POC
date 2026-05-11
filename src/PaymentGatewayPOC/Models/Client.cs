@@ -3,28 +3,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PaymentGatewayPOC.Models;
 
-public class Application
+public class Client
 {
     [Key]
-    public Guid ApplicationId { get; set; }
+    public Guid ClientId { get; set; }
 
     [Required]
     public Guid OrganizationId { get; set; }
 
     [Required]
-    [MaxLength(255)]
-    public string ClientId { get; set; } = string.Empty;
+    public Guid ApplicationId { get; set; }
 
     [Required]
-    [MaxLength(500)]
-    public string AccessLocation { get; set; } = string.Empty;
+    [MaxLength(255)]
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
+    public string SecretKey { get; set; } = string.Empty;
 
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+    public DateTime? ExpiryDate { get; set; }
 
     // Navigation properties
     [ForeignKey("OrganizationId")]
     public Organization? Organization { get; set; }
 
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-    public ICollection<Client> Clients { get; set; } = new List<Client>();
+    [ForeignKey("ApplicationId")]
+    public Application? Application { get; set; }
 }

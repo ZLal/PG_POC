@@ -12,6 +12,7 @@ public class PaymentGatewayContext : DbContext
 
     public DbSet<Organization> Organizations { get; set; } = null!;
     public DbSet<Application> Applications { get; set; } = null!;
+    public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Gateway> Gateways { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
     public DbSet<TransactionDetail> TransactionDetails { get; set; } = null!;
@@ -26,6 +27,18 @@ public class PaymentGatewayContext : DbContext
             .HasOne(a => a.Organization)
             .WithMany(o => o.Applications)
             .HasForeignKey(a => a.OrganizationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Client>()
+            .HasOne(c => c.Organization)
+            .WithMany(o => o.Clients)
+            .HasForeignKey(c => c.OrganizationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Client>()
+            .HasOne(c => c.Application)
+            .WithMany(a => a.Clients)
+            .HasForeignKey(c => c.ApplicationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Transaction>()

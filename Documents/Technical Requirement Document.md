@@ -32,7 +32,7 @@
   - Repository pattern for database operations  
 
 - **Database Layer**  
-  - SQLite database with tables for Organizations, Applications, Gateways, Transactions, and Logs  
+  - SQLite database with tables for Organizations, Applications, Gateways, Transactions, Logs etc.
 
 ---
 
@@ -81,6 +81,12 @@
 - Message (TEXT)  
 - Data (TEXT, nullable)  
 - CreatedDate (DATETIME)  
+
+**ErrorLogs**  
+- LogId (PK, GUID)  
+- TransactionId (FK, nullable)  
+- ErrorMessage (nvarchar)  
+- Timestamp (datetime)  
 
 ---
 
