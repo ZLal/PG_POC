@@ -27,3 +27,4 @@
 - Implement repository pattern for data access
 - Create service layer with logging
 - Create API controllers for services
+- Add migration for database
