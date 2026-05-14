@@ -24,3 +24,5 @@
 - Create API controllers for services
 - Add migration for database
 - Write code to run migration on application start
+- Create enum GatewayStatus with values Active, InActive and Disabled. Update Gateway model to use it.
+- In GatewaysController modify Create and Update models to use GatewayStatus enum

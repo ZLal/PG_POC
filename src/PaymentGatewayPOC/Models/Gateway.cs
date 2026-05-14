@@ -12,8 +12,7 @@ public class Gateway
     public string Name { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(50)]
-    public string Status { get; set; } = "Active";
+    public GatewayStatus Status { get; set; } = GatewayStatus.Active;
 
     // Navigation properties
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

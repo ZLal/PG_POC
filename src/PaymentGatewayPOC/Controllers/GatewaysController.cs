@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGatewayPOC.Models;
 using PaymentGatewayPOC.Services.Interfaces;
@@ -94,8 +95,7 @@ public class GatewaysController : ControllerBase
                 return BadRequest("Gateway name is required");
             }
 
-            var status = string.IsNullOrWhiteSpace(request.Status) ? "Active" : request.Status;
-            var gateway = await _gatewayService.CreateGatewayAsync(request.Name, status);
+            var gateway = await _gatewayService.CreateGatewayAsync(request.Name, request.Status);
             return CreatedAtAction(nameof(GetGatewayById), new { id = gateway.GatewayId }, gateway);
         }
         catch (Exception ex)
@@ -116,9 +116,9 @@ public class GatewaysController : ControllerBase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Status))
+            if (string.IsNullOrWhiteSpace(request.Name))
             {
-                return BadRequest("Name and Status are required");
+                return BadRequest("Name is required");
             }
 
             var gateway = await _gatewayService.UpdateGatewayAsync(id, request.Name, request.Status);
@@ -182,11 +182,11 @@ public class GatewaysController : ControllerBase
 public class CreateGatewayRequest
 {
     public string Name { get; set; } = string.Empty;
-    public string? Status { get; set; }
+    public GatewayStatus Status { get; set; } = GatewayStatus.Active;
 }
 
 public class UpdateGatewayRequest
 {
     public string Name { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
+    public GatewayStatus Status { get; set; } = GatewayStatus.Active;
 }

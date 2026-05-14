@@ -22,12 +22,12 @@ public interface IGatewayService
     /// <summary>
     /// Create a new gateway
     /// </summary>
-    Task<Gateway> CreateGatewayAsync(string name, string status = "Active");
+    Task<Gateway> CreateGatewayAsync(string name, GatewayStatus status = GatewayStatus.Active);
 
     /// <summary>
     /// Update gateway
     /// </summary>
-    Task<Gateway> UpdateGatewayAsync(Guid id, string name, string status);
+    Task<Gateway> UpdateGatewayAsync(Guid id, string name, GatewayStatus status);
 
     /// <summary>
     /// Delete gateway

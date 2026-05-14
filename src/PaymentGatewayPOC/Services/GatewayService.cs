@@ -55,7 +55,7 @@ public class GatewayService : IGatewayService
         try
         {
             _logger.LogInformation("Fetching active gateways");
-            var gateways = await _unitOfWork.Gateways.FindAsync(g => g.Status == "Active");
+            var gateways = await _unitOfWork.Gateways.FindAsync(g => g.Status == GatewayStatus.Active);
             _logger.LogInformation($"Retrieved {gateways.Count()} active gateways");
             return gateways;
         }
@@ -66,7 +66,7 @@ public class GatewayService : IGatewayService
         }
     }
 
-    public async Task<Gateway> CreateGatewayAsync(string name, string status = "Active")
+    public async Task<Gateway> CreateGatewayAsync(string name, GatewayStatus status = GatewayStatus.Active)
     {
         try
         {
@@ -92,7 +92,7 @@ public class GatewayService : IGatewayService
         }
     }
 
-    public async Task<Gateway> UpdateGatewayAsync(Guid id, string name, string status)
+    public async Task<Gateway> UpdateGatewayAsync(Guid id, string name, GatewayStatus status)
     {
         try
         {
