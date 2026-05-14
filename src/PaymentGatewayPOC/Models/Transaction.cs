@@ -19,8 +19,7 @@ public class Transaction
     public decimal Amount { get; set; }
 
     [Required]
-    [MaxLength(50)]
-    public string Status { get; set; } = "Pending";
+    public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
 
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 

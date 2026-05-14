@@ -113,7 +113,7 @@ public class TransactionsController : ControllerBase
                 return BadRequest("ApplicationId, GatewayId, and positive Amount are required");
             }
 
-            var status = string.IsNullOrWhiteSpace(request.Status) ? "Pending" : request.Status;
+            var status = request.Status ?? TransactionStatus.Pending;
             var transaction = await _transactionService.CreateTransactionAsync(request.ApplicationId, request.GatewayId, request.Amount, status);
             return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.TransactionId }, transaction);
         }
@@ -135,11 +135,6 @@ public class TransactionsController : ControllerBase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Status))
-            {
-                return BadRequest("Status is required");
-            }
-
             var transaction = await _transactionService.UpdateTransactionStatusAsync(id, request.Status);
             return Ok(transaction);
         }
@@ -267,12 +262,12 @@ public class CreateTransactionRequest
     public Guid ApplicationId { get; set; }
     public Guid GatewayId { get; set; }
     public decimal Amount { get; set; }
-    public string? Status { get; set; }
+    public TransactionStatus? Status { get; set; }
 }
 
 public class UpdateTransactionStatusRequest
 {
-    public string Status { get; set; } = string.Empty;
+    public TransactionStatus Status { get; set; }
 }
 
 public class AddTransactionDetailRequest

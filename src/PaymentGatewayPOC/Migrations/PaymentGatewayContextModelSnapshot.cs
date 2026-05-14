@@ -162,10 +162,9 @@ namespace PaymentGatewayPOC.Migrations
                     b.Property<Guid>("GatewayId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("TransactionId");
 

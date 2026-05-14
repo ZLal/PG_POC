@@ -27,3 +27,9 @@
 - Create enum GatewayStatus with values Active, InActive and Disabled. Update Gateway model to use it.
 - In GatewaysController modify Create and Update models to use GatewayStatus enum
 - Update Migration for changing Gateway status from string to enum
+- TransactionStatus
+  - Create enum TransactionStatus with values Pending, InPayment, Paid, Refunded, Failed & Error. Change Status in Models\Transaction.cs model from string to TransactionStatus. Update Migration and api models in controller accordingly.
+  - Instead of creating new migration modify existing once
+  - Update existing migration to int to store enum instead of string
+  - Change 20260511121933_InitialCreate.Designer.cs to use int for Status in Transaction
+

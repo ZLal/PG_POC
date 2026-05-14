@@ -95,7 +95,7 @@ namespace PaymentGatewayPOC.Migrations
                     ApplicationId = table.Column<Guid>(type: "TEXT", nullable: false),
                     GatewayId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>

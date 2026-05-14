@@ -82,7 +82,7 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount, string status = "Pending")
+    public async Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount, TransactionStatus status = TransactionStatus.Pending)
     {
         try
         {
@@ -111,7 +111,7 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<Transaction> UpdateTransactionStatusAsync(Guid id, string status)
+    public async Task<Transaction> UpdateTransactionStatusAsync(Guid id, TransactionStatus status)
     {
         try
         {
