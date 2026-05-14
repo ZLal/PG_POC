@@ -26,3 +26,4 @@
 - Write code to run migration on application start
 - Create enum GatewayStatus with values Active, InActive and Disabled. Update Gateway model to use it.
 - In GatewaysController modify Create and Update models to use GatewayStatus enum
+- Update Migration for changing Gateway status from string to enum

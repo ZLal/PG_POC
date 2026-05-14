@@ -17,7 +17,7 @@ namespace PaymentGatewayPOC.Migrations
                 {
                     GatewayId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    Status = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
