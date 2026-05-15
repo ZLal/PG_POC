@@ -23,6 +23,8 @@ public class Transaction
 
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
+    public DateTime LastUpdatedDate { get; set; } = DateTime.UtcNow;
+
     // Navigation properties
     [ForeignKey("ApplicationId")]
     public Application? Application { get; set; }

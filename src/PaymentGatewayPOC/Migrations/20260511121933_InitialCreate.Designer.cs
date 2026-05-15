@@ -162,6 +162,9 @@ namespace PaymentGatewayPOC.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("LastUpdatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("GatewayId")
                         .HasColumnType("TEXT");
 

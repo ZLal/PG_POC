@@ -73,6 +73,7 @@
 - Amount (REAL)  
 - Status (TEXT)  
 - CreatedDate (DATETIME)  
+- LastUpdatedDate (DATETIME)  
 
 **TransactionDetails**  
 - TransactionDetailId (PK, GUID)  
@@ -120,7 +121,11 @@
 - `GET /reports/usage` → Organization/application usage  
 
 **Webhook Simulation**  
-- `POST /webhooks/notify` → Simulated notification for transaction events  
+- `POST /webhooks/notify` → Simulated notification for transaction events
+
+**Payment**
+- `POST /payment/create` → Create a transaction with status pending
+- `POST /payment/update` → Create an entry in transaction details and update last updated date in transaction model
 
 ---
 

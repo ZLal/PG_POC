@@ -1,6 +1,7 @@
 
 ## TODO
-
+Add cancelled state to transaction status
+Change clientid in application model from string to guid
 
 ## Done
 
@@ -12,6 +13,7 @@
 - Implement API endpoints
 - Create API controllers for CRUD operations
 - Configure database migrations
+- Add last updated date to transaction model
 
 ## Used prompts
 - dotnet new webapi -n PaymentGatewayPOC --no-https
@@ -32,4 +34,6 @@
   - Instead of creating new migration modify existing once
   - Update existing migration to int to store enum instead of string
   - Change 20260511121933_InitialCreate.Designer.cs to use int for Status in Transaction
-
+- Transaction model modification
+  - Add LastUpdatedDate to transaction model. Also update existing migration accordingly. Don't create new migration.
+  - Update changes for LastUpdatedDate in Transaction in designer file
