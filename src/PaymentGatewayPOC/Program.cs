@@ -33,6 +33,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<PaymentGatewayPOC.Data.PaymentGatewayContext>();
+        context.Database.EnsureCreated(); // Ensure the database is created before applying migrations
         context.Database.Migrate();
         logger.LogInformation("Database migrated successfully on startup.");
     }

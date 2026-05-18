@@ -1,5 +1,6 @@
 
 ## TODO
+Update TransactionService model to use LastUpdatedDate mapping
 Add cancelled state to transaction status
 Change clientid in application model from string to guid
 
@@ -37,3 +38,4 @@ Change clientid in application model from string to guid
 - Transaction model modification
   - Add LastUpdatedDate to transaction model. Also update existing migration accordingly. Don't create new migration.
   - Update changes for LastUpdatedDate in Transaction in designer file
+- dotnet new blazor -n BlazorUITemplate
