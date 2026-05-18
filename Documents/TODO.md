@@ -4,18 +4,6 @@ Update TransactionService model to use LastUpdatedDate mapping
 Add cancelled state to transaction status
 Change clientid in application model from string to guid
 
-## Done
-
-- Create service layer
-- Set up the repository pattern
-- Implement repository pattern for data access
-- Set up the database models (Organization, Application, Gateway etc.)
-- Create Entity Framework DbContext
-- Implement API endpoints
-- Create API controllers for CRUD operations
-- Configure database migrations
-- Add last updated date to transaction model
-
 ## Used prompts
 - dotnet new webapi -n PaymentGatewayPOC --no-https
 - Convert project from using minimal API to old style controller structure.
@@ -39,3 +27,6 @@ Change clientid in application model from string to guid
   - Add LastUpdatedDate to transaction model. Also update existing migration accordingly. Don't create new migration.
   - Update changes for LastUpdatedDate in Transaction in designer file
 - dotnet new blazor -n BlazorUITemplate
+- Create razor page PaymentCreate.razor in Components\Pages with 3 text boxes to input ClientID (GUID), ClientSecret (string) and Amount (numeric). It also need a submit button which will start a 100 ms delay and redirect to NotFound.razor page.
+- Create razor page PaymentProcess.razor in Components\Pages with 2 labels to display TransactionId (GUID) and Amount (numeric). TransactionId will be received as query parameter. It also need 3 buttons Completed, Failed and Cancelled each of those on click starts a 100 ms delay and redirect to NotFound.razor page.
+

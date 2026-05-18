@@ -1,0 +1,35 @@
+@page "/payment-create"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Payment Create</PageTitle>
+
+<h3>Payment Create</h3>
+
+<div class="mb-3">
+    <label for="clientId" class="form-label">Client ID</label>
+    <InputText id="clientId" class="form-control" @bind-Value="ClientId" />
+</div>
+
+<div class="mb-3">
+    <label for="clientSecret" class="form-label">Client Secret</label>
+    <InputText id="clientSecret" class="form-control" @bind-Value="ClientSecret" />
+</div>
+
+<div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <NumberInput id="amount" TValue="decimal" class="form-control" @bind-Value="Amount" />
+</div>
+
+<button class="btn btn-primary" @onclick="SubmitAsync">Submit</button>
+
+@code {
+    private string ClientId { get; set; } = string.Empty;
+    private string ClientSecret { get; set; } = string.Empty;
+    private decimal Amount { get; set; }
+
+    private async Task SubmitAsync()
+    {
+        await Task.Delay(100);
+        NavigationManager.NavigateTo("/not-found");
+    }
+}

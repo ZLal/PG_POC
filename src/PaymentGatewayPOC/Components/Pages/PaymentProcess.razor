@@ -1,0 +1,54 @@
+@page "/payment-process/{TransactionIdParam:guid}"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Payment Process</PageTitle>
+
+<h3>Payment Process</h3>
+
+<div class="mb-3">
+    <label for="transactionId" class="form-label">Transaction ID</label>
+    <div id="transactionId" class="form-control" style="background-color: #e9ecef;">@TransactionId</div>
+</div>
+
+<div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <div id="amount" class="form-control" style="background-color: #e9ecef;">@Amount.ToString("C")</div>
+</div>
+
+<div class="button-group">
+    <button class="btn btn-success" @onclick="OnCompletedAsync">Completed</button>
+    <button class="btn btn-danger" @onclick="OnFailedAsync">Failed</button>
+    <button class="btn btn-warning" @onclick="OnCancelledAsync">Cancelled</button>
+</div>
+
+@code {
+    [Parameter]
+    public Guid TransactionIdParam { get; set; }
+
+    private Guid TransactionId { get; set; }
+    private decimal Amount { get; set; } = 100.00m;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500); // Simulate loading delay
+        TransactionId = TransactionIdParam;
+    }
+
+    private async Task OnCompletedAsync()
+    {
+        await Task.Delay(100);
+        NavigationManager.NavigateTo("/not-found");
+    }
+
+    private async Task OnFailedAsync()
+    {
+        await Task.Delay(100);
+        NavigationManager.NavigateTo("/not-found");
+    }
+
+    private async Task OnCancelledAsync()
+    {
+        await Task.Delay(100);
+        NavigationManager.NavigateTo("/not-found");
+    }
+}
