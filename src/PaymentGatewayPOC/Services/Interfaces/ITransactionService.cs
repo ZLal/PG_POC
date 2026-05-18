@@ -27,12 +27,12 @@ public interface ITransactionService
     /// <summary>
     /// Create a new transaction
     /// </summary>
-    Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount, string status = "Pending");
+    Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount, TransactionStatus status);
 
     /// <summary>
     /// Update transaction status
     /// </summary>
-    Task<Transaction> UpdateTransactionStatusAsync(Guid id, string status);
+    Task<Transaction> UpdateTransactionStatusAsync(Guid id, TransactionStatus status);
 
     /// <summary>
     /// Add transaction detail/log
