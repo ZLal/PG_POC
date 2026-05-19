@@ -45,6 +45,11 @@ public interface IClientService
     Task<bool> ValidateClientSecretAsync(Guid clientId, string secretKey);
 
     /// <summary>
+    /// Get client by secret key
+    /// </summary>
+    Task<Client?> GetClientBySecretKeyAsync(Guid clientId, string secretKey);
+
+    /// <summary>
     /// Get clients count
     /// </summary>
     Task<int> GetClientCountAsync();

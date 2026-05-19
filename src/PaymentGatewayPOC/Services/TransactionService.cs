@@ -82,20 +82,22 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount, TransactionStatus status = TransactionStatus.Pending)
+    public async Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount)
     {
         try
         {
             _logger.LogInformation($"Creating new transaction for application ID: {applicationId}, gateway ID: {gatewayId}, amount: {amount}");
             
+            var createdDate = DateTime.UtcNow;
             var transaction = new Transaction
             {
                 TransactionId = Guid.NewGuid(),
                 ApplicationId = applicationId,
                 GatewayId = gatewayId,
                 Amount = amount,
-                Status = status,
-                CreatedDate = DateTime.UtcNow
+                Status = TransactionStatus.Pending,
+                CreatedDate = createdDate,
+                updatedDate = createdDate
             };
 
             await _unitOfWork.Transactions.AddAsync(transaction);
@@ -125,6 +127,7 @@ public class TransactionService : ITransactionService
             }
 
             transaction.Status = status;
+            transaction.updatedDate = DateTime.UtcNow;
             await _unitOfWork.Transactions.UpdateAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 

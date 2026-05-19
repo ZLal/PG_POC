@@ -1,5 +1,8 @@
 @page "/payment-create"
 @inject NavigationManager NavigationManager
+@inject IClientService ClientService
+@inject ITransactionService TransactionService
+@inject IApplicationService ApplicationService
 
 <PageTitle>Payment Create</PageTitle>
 
@@ -29,7 +32,27 @@
 
     private async Task SubmitAsync()
     {
-        await Task.Delay(100);
-        NavigationManager.NavigateTo("/not-found");
+        var client = await ClientService.GetClientBySecretKeyAsync(Guid.Parse(ClientId), ClientSecret);
+        if (client == null)
+        {
+            NavigationManager.NavigateTo("/not-found");
+            return;
+        }
+
+        var application = await ApplicationService.GetApplicationWithActiveGatewaysAsync(client.ApplicationId);
+        if (application == null || application.Gateways == null)
+        {
+            NavigationManager.NavigateTo("/not-found");
+            return;
+        }
+
+        var transaction = await TransactionService.CreateTransactionAsync(
+            application.Id,
+            application.Gateways.First().Id,
+            Amount
+        );
+
+        NavigationManager.NavigateTo($"/payment-process?TransactionIdParam={transaction.Id}");
+        return;
     }
 }

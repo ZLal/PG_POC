@@ -27,7 +27,7 @@ public interface ITransactionService
     /// <summary>
     /// Create a new transaction
     /// </summary>
-    Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount, TransactionStatus status);
+    Task<Transaction> CreateTransactionAsync(Guid applicationId, Guid gatewayId, decimal amount);
 
     /// <summary>
     /// Update transaction status

@@ -1,8 +1,8 @@
 
 ## TODO
-Update TransactionService model to use LastUpdatedDate mapping
-Add cancelled state to transaction status
-Change clientid in application model from string to guid
+- Update TransactionService model to use LastUpdatedDate mapping
+- Add cancelled state to transaction status
+- Change clientid in application model from string to guid
 
 ## Used prompts
 - dotnet new webapi -n PaymentGatewayPOC --no-https
@@ -29,4 +29,10 @@ Change clientid in application model from string to guid
 - dotnet new blazor -n BlazorUITemplate
 - Create razor page PaymentCreate.razor in Components\Pages with 3 text boxes to input ClientID (GUID), ClientSecret (string) and Amount (numeric). It also need a submit button which will start a 100 ms delay and redirect to NotFound.razor page.
 - Create razor page PaymentProcess.razor in Components\Pages with 2 labels to display TransactionId (GUID) and Amount (numeric). TransactionId will be received as query parameter. It also need 3 buttons Completed, Failed and Cancelled each of those on click starts a 100 ms delay and redirect to NotFound.razor page.
+- Modify Application and Gateway models to have a many to many relationship. Update dbcontext and related places as needed
+- Add GetApplicationsWithGatewayAsync(applicationId) & GetApplicationsWithActiveGatewayAsync(applicationId) methods to ApplicationService. Modify repository for this change.
+- Inline commands in PaymentCreate.razor
+  - Inject IClientService and ITransactionService
+  - Inject IApplicationService and use applicationid from client to get applications with active gateways
 
+**No more updates will be added to prompts since there are enough examples already**

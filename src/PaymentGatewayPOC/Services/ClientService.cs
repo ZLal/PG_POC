@@ -195,6 +195,34 @@ public class ClientService : IClientService
         }
     }
 
+    public async Task<Client?> GetClientBySecretKeyAsync(Guid clientId, string secretKey)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching client by application for client ID: {clientId}");
+            
+            var client = await _unitOfWork.Clients.GetByIdAsync(clientId);
+            if (client == null)
+            {
+                _logger.LogWarning($"Client with ID {clientId} not found");
+                return null;
+            }
+
+            if (client.SecretKey != secretKey || (client.ExpiryDate != null && client.ExpiryDate <= DateTime.UtcNow))
+            {
+                _logger.LogWarning($"Invalid secret key or expired client for ID {clientId}");
+                return null;
+            }
+
+            return client;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching client by application for ID {clientId}");
+            throw;
+        }
+    }
+
     public async Task<int> GetClientCountAsync()
     {
         try
