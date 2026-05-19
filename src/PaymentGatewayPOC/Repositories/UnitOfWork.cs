@@ -14,9 +14,10 @@ public class UnitOfWork : IUnitOfWork
     private IDbContextTransaction? _transaction;
 
     private IRepository<Organization>? _organizationRepository;
-    private IRepository<Application>? _applicationRepository;
+    private IApplicationRepository? _applicationRepository;
     private IRepository<Client>? _clientRepository;
     private IRepository<Gateway>? _gatewayRepository;
+    private IRepository<ApplicationGateway>? _applicationGatewayRepository;
     private IRepository<Transaction>? _transactionRepository;
     private IRepository<TransactionDetail>? _transactionDetailRepository;
     private IRepository<ErrorLog>? _errorLogRepository;
@@ -29,14 +30,17 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Organization> Organizations =>
         _organizationRepository ??= new Repository<Organization>(_context);
 
-    public IRepository<Application> Applications =>
-        _applicationRepository ??= new Repository<Application>(_context);
+    public IApplicationRepository Applications =>
+        _applicationRepository ??= new ApplicationRepository(_context);
 
     public IRepository<Client> Clients =>
         _clientRepository ??= new Repository<Client>(_context);
 
     public IRepository<Gateway> Gateways =>
         _gatewayRepository ??= new Repository<Gateway>(_context);
+
+    public IRepository<ApplicationGateway> ApplicationGateways =>
+        _applicationGatewayRepository ??= new Repository<ApplicationGateway>(_context);
 
     public IRepository<Transaction> Transactions =>
         _transactionRepository ??= new Repository<Transaction>(_context);

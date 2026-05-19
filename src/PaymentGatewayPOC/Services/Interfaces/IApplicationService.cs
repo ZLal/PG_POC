@@ -20,6 +20,16 @@ public interface IApplicationService
     Task<IEnumerable<Application>> GetApplicationsByOrganizationAsync(Guid organizationId);
 
     /// <summary>
+    /// Get applications with their associated gateways
+    /// </summary>
+    Task<IEnumerable<Application>> GetApplicationsWithGatewayAsync(Guid applicationId);
+
+    /// <summary>
+    /// Get applications with their associated active gateways
+    /// </summary>
+    Task<IEnumerable<Application>> GetApplicationsWithActiveGatewayAsync(Guid applicationId);
+
+    /// <summary>
     /// Create a new application
     /// </summary>
     Task<Application> CreateApplicationAsync(Guid organizationId, string clientId, string accessLocation);

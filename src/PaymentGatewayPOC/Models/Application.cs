@@ -27,4 +27,5 @@ public class Application
 
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     public ICollection<Client> Clients { get; set; } = new List<Client>();
+    public ICollection<ApplicationGateway> ApplicationGateways { get; set; } = new List<ApplicationGateway>();
 }

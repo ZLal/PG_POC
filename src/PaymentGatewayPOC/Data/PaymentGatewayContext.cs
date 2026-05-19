@@ -14,6 +14,7 @@ public class PaymentGatewayContext : DbContext
     public DbSet<Application> Applications { get; set; } = null!;
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Gateway> Gateways { get; set; } = null!;
+    public DbSet<ApplicationGateway> ApplicationGateways { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
     public DbSet<TransactionDetail> TransactionDetails { get; set; } = null!;
     public DbSet<ErrorLog> ErrorLogs { get; set; } = null!;
@@ -52,6 +53,21 @@ public class PaymentGatewayContext : DbContext
             .WithMany(g => g.Transactions)
             .HasForeignKey(t => t.GatewayId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ApplicationGateway>()
+            .HasKey(ag => new { ag.ApplicationId, ag.GatewayId });
+
+        modelBuilder.Entity<ApplicationGateway>()
+            .HasOne(ag => ag.Application)
+            .WithMany(a => a.ApplicationGateways)
+            .HasForeignKey(ag => ag.ApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ApplicationGateway>()
+            .HasOne(ag => ag.Gateway)
+            .WithMany(g => g.ApplicationGateways)
+            .HasForeignKey(ag => ag.GatewayId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TransactionDetail>()
             .HasOne(td => td.Transaction)

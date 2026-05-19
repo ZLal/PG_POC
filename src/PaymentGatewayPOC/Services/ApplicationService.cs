@@ -66,6 +66,46 @@ public class ApplicationService : IApplicationService
         }
     }
 
+    public async Task<IEnumerable<Application>> GetApplicationsWithGatewayAsync(Guid applicationId)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching application with gateways for application ID: {applicationId}");
+            var application = await _unitOfWork.Applications.GetApplicationsWithGatewayAsync(applicationId);
+            if (application == null)
+            {
+                _logger.LogWarning($"Application with ID {applicationId} not found");
+                return Enumerable.Empty<Application>();
+            }
+            return new List<Application> { application };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching application with gateways for application ID {applicationId}");
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Application>> GetApplicationsWithActiveGatewayAsync(Guid applicationId)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching application with active gateways for application ID: {applicationId}");
+            var application = await _unitOfWork.Applications.GetApplicationsWithActiveGatewayAsync(applicationId);
+            if (application == null)
+            {
+                _logger.LogWarning($"Application with ID {applicationId} not found");
+                return Enumerable.Empty<Application>();
+            }
+            return new List<Application> { application };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching application with active gateways for application ID {applicationId}");
+            throw;
+        }
+    }
+
     public async Task<Application> CreateApplicationAsync(Guid organizationId, string clientId, string accessLocation)
     {
         try
