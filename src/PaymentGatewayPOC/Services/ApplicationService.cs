@@ -66,18 +66,17 @@ public class ApplicationService : IApplicationService
         }
     }
 
-    public async Task<IEnumerable<Application>> GetApplicationsWithGatewayAsync(Guid applicationId)
+    public async Task<Application?> GetApplicationWithGatewayAsync(Guid applicationId)
     {
         try
         {
             _logger.LogInformation($"Fetching application with gateways for application ID: {applicationId}");
-            var application = await _unitOfWork.Applications.GetApplicationsWithGatewayAsync(applicationId);
+            var application = await _unitOfWork.Applications.GetApplicationWithGatewayAsync(applicationId);
             if (application == null)
             {
                 _logger.LogWarning($"Application with ID {applicationId} not found");
-                return Enumerable.Empty<Application>();
             }
-            return new List<Application> { application };
+            return application;
         }
         catch (Exception ex)
         {
@@ -86,18 +85,22 @@ public class ApplicationService : IApplicationService
         }
     }
 
-    public async Task<IEnumerable<Application>> GetApplicationsWithActiveGatewayAsync(Guid applicationId)
+    public async Task<Application?> GetApplicationWithActiveGatewayAsync(Guid applicationId)
     {
         try
         {
             _logger.LogInformation($"Fetching application with active gateways for application ID: {applicationId}");
-            var application = await _unitOfWork.Applications.GetApplicationsWithActiveGatewayAsync(applicationId);
+            var application = await _unitOfWork.Applications.GetApplicationWithGatewayAsync(applicationId);
             if (application == null)
             {
                 _logger.LogWarning($"Application with ID {applicationId} not found");
-                return Enumerable.Empty<Application>();
             }
-            return new List<Application> { application };
+            else
+            {
+                application.ApplicationGateways = [.. application.ApplicationGateways
+                    .Where(ag => ag.Gateway != null && ag.Gateway.Status == GatewayStatus.Active)];
+            }
+            return application;
         }
         catch (Exception ex)
         {
@@ -106,18 +109,23 @@ public class ApplicationService : IApplicationService
         }
     }
 
-    public async Task<Application> CreateApplicationAsync(Guid organizationId, string clientId, string accessLocation)
+    public async Task<Application> CreateApplicationAsync(Guid organizationId, string name, Guid clientId)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                _logger.LogWarning("Application name is required");
+                throw new ArgumentException("Application name is required", nameof(name));
+            }
             _logger.LogInformation($"Creating new application for organization ID: {organizationId}");
             
             var application = new Application
             {
                 ApplicationId = Guid.NewGuid(),
                 OrganizationId = organizationId,
+                Name = name,
                 ClientId = clientId,
-                AccessLocation = accessLocation,
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -134,7 +142,7 @@ public class ApplicationService : IApplicationService
         }
     }
 
-    public async Task<Application> UpdateApplicationAsync(Guid id, string clientId, string accessLocation)
+    public async Task<Application> UpdateApplicationAsync(Guid id, Guid clientId)
     {
         try
         {
@@ -148,7 +156,6 @@ public class ApplicationService : IApplicationService
             }
 
             application.ClientId = clientId;
-            application.AccessLocation = accessLocation;
             await _unitOfWork.Applications.UpdateAsync(application);
             await _unitOfWork.SaveChangesAsync();
 

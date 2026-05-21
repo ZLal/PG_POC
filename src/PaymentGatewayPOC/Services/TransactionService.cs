@@ -50,6 +50,30 @@ public class TransactionService : ITransactionService
         }
     }
 
+    public async Task<Transaction> GetTransactionWithTransactionDetailsAsync(Guid transactionId)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching transaction with details for ID: {transactionId}");
+            var transaction = await _unitOfWork.Transactions.GetByIdAsync(transactionId);
+            if (transaction == null)
+            {
+                _logger.LogWarning($"Transaction with ID {transactionId} not found");
+                throw new KeyNotFoundException($"Transaction with ID {transactionId} not found");
+            }
+
+            var details = await _unitOfWork.TransactionDetails.FindAsync(td => td.TransactionId == transactionId);
+            transaction.TransactionDetails = [.. details];
+
+            return transaction;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching transaction with details for ID {transactionId}");
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<Transaction>> GetTransactionsByApplicationAsync(Guid applicationId)
     {
         try
@@ -97,7 +121,7 @@ public class TransactionService : ITransactionService
                 Amount = amount,
                 Status = TransactionStatus.Pending,
                 CreatedDate = createdDate,
-                updatedDate = createdDate
+                LastUpdatedDate = createdDate
             };
 
             await _unitOfWork.Transactions.AddAsync(transaction);
@@ -127,7 +151,7 @@ public class TransactionService : ITransactionService
             }
 
             transaction.Status = status;
-            transaction.updatedDate = DateTime.UtcNow;
+            transaction.LastUpdatedDate = DateTime.UtcNow;
             await _unitOfWork.Transactions.UpdateAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 

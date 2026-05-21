@@ -15,6 +15,11 @@ public interface ITransactionService
     Task<Transaction?> GetTransactionByIdAsync(Guid id);
 
     /// <summary>
+    /// Get transaction with details by ID
+    /// </summary>
+    Task<Transaction> GetTransactionWithTransactionDetailsAsync(Guid transactionId);
+
+    /// <summary>
     /// Get transactions by application ID
     /// </summary>
     Task<IEnumerable<Transaction>> GetTransactionsByApplicationAsync(Guid applicationId);

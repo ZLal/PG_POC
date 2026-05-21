@@ -1,6 +1,7 @@
+using PaymentGatewayPOC.Models;
+using PaymentGatewayPOC.Repositories.Interfaces;
 
 public interface IApplicationRepository : IRepository<Application>
 {
-    Task<IEnumerable<Application>> GetApplicationsWithGatewayAsync(Guid applicationId);
-    Task<IEnumerable<Application>> GetApplicationsWithActiveGatewayAsync(Guid applicationId);
+    Task<Application?> GetApplicationWithGatewayAsync(Guid applicationId);
 }

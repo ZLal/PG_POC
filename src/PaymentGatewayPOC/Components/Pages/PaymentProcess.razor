@@ -1,4 +1,6 @@
 @page "/payment-process/{TransactionIdParam:guid}"
+@using PaymentGatewayPOC.Services.Interfaces
+@using PaymentGatewayPOC.Models
 @inject NavigationManager NavigationManager
 @inject ITransactionService TransactionService
 
@@ -32,9 +34,9 @@
     protected override async Task OnInitializedAsync()
     {
         TransactionId = TransactionIdParam;
-        // Fetch transaction details using the TransactionId
-        var transaction = await TransactionService.GetTransactionDetailsAsync(TransactionId);
-        Amount = transaction.Amount;
+        
+        var transaction = await TransactionService.GetTransactionByIdAsync(TransactionId);
+        Amount = transaction?.Amount ?? 0m;
     }
 
     private async Task OnCompletedAsync()

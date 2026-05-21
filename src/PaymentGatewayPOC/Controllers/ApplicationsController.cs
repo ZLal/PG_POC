@@ -89,12 +89,12 @@ public class ApplicationsController : ControllerBase
     {
         try
         {
-            if (request.OrganizationId == Guid.Empty || string.IsNullOrWhiteSpace(request.ClientId) || string.IsNullOrWhiteSpace(request.AccessLocation))
+            if (request.OrganizationId == Guid.Empty || request.ClientId == Guid.Empty || string.IsNullOrWhiteSpace(request.Name))
             {
-                return BadRequest("OrganizationId, ClientId, and AccessLocation are required");
+                return BadRequest("OrganizationId, Name, ClientId are required");
             }
 
-            var application = await _applicationService.CreateApplicationAsync(request.OrganizationId, request.ClientId, request.AccessLocation);
+            var application = await _applicationService.CreateApplicationAsync(request.OrganizationId, request.Name, request.ClientId);
             return CreatedAtAction(nameof(GetApplicationById), new { id = application.ApplicationId }, application);
         }
         catch (Exception ex)
@@ -115,12 +115,12 @@ public class ApplicationsController : ControllerBase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.ClientId) || string.IsNullOrWhiteSpace(request.AccessLocation))
+            if (request.ClientId == Guid.Empty)
             {
-                return BadRequest("ClientId and AccessLocation are required");
+                return BadRequest("ClientId is required");
             }
 
-            var application = await _applicationService.UpdateApplicationAsync(id, request.ClientId, request.AccessLocation);
+            var application = await _applicationService.UpdateApplicationAsync(id, request.ClientId);
             return Ok(application);
         }
         catch (KeyNotFoundException)
@@ -181,12 +181,11 @@ public class ApplicationsController : ControllerBase
 public class CreateApplicationRequest
 {
     public Guid OrganizationId { get; set; }
-    public string ClientId { get; set; } = string.Empty;
-    public string AccessLocation { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public Guid ClientId { get; set; } = Guid.Empty;
 }
 
 public class UpdateApplicationRequest
 {
-    public string ClientId { get; set; } = string.Empty;
-    public string AccessLocation { get; set; } = string.Empty;
+    public Guid ClientId { get; set; } = Guid.Empty;
 }
