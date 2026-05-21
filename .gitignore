@@ -360,3 +360,4 @@ MigrationBackup/
 
 # Devcontainer files
 .devcontainer/devcontainer-lock.json
+dotnet/runfile-discovery/*
