@@ -5,6 +5,7 @@ public enum TransactionStatus
     Pending,
     InPayment,
     Paid,
+    Cancelled,
     Refunded,
     Failed,
     Error

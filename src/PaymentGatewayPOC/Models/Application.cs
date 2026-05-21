@@ -12,12 +12,10 @@ public class Application
     public Guid OrganizationId { get; set; }
 
     [Required]
-    [MaxLength(255)]
-    public string ClientId { get; set; } = string.Empty;
+    [MaxLength(50)]
+    public string Name { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(500)]
-    public string AccessLocation { get; set; } = string.Empty;
+    public Guid ClientId { get; set; }
 
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 

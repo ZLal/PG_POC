@@ -1,5 +1,6 @@
 @page "/payment-process/{TransactionIdParam:guid}"
 @inject NavigationManager NavigationManager
+@inject ITransactionService TransactionService
 
 <PageTitle>Payment Process</PageTitle>
 
@@ -30,25 +31,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(500); // Simulate loading delay
         TransactionId = TransactionIdParam;
+        // Fetch transaction details using the TransactionId
+        var transaction = await TransactionService.GetTransactionDetailsAsync(TransactionId);
+        Amount = transaction.Amount;
     }
 
     private async Task OnCompletedAsync()
     {
-        await Task.Delay(100);
-        NavigationManager.NavigateTo("/not-found");
+        await TransactionService.UpdateTransactionStatusAsync(TransactionId, TransactionStatus.Paid);
+        NavigationManager.NavigateTo($"/payment-status/{TransactionId}");
     }
 
     private async Task OnFailedAsync()
     {
-        await Task.Delay(100);
-        NavigationManager.NavigateTo("/not-found");
+        await TransactionService.UpdateTransactionStatusAsync(TransactionId, TransactionStatus.Failed);
+        NavigationManager.NavigateTo($"/payment-status/{TransactionId}");
     }
 
     private async Task OnCancelledAsync()
     {
-        await Task.Delay(100);
-        NavigationManager.NavigateTo("/not-found");
+        await TransactionService.UpdateTransactionStatusAsync(TransactionId, TransactionStatus.Cancelled);
+        NavigationManager.NavigateTo($"/payment-status/{TransactionId}");
     }
 }

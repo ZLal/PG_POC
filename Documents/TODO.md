@@ -1,7 +1,5 @@
 
 ## TODO
-- Update TransactionService model to use LastUpdatedDate mapping
-- Add cancelled state to transaction status
 - Change clientid in application model from string to guid
 
 ## Used prompts
