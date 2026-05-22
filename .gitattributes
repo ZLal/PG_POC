@@ -1,0 +1,41 @@
+# Ensure all text files use LF inside the repo
+* text=auto eol=lf
+
+# C# source files
+# *.cs     text diff=csharp
+# *.csproj text eol=lf
+# *.sln    text eol=lf
+
+# Config and JSON files
+# *.json   text eol=lf
+# *.jsonc  text eol=lf
+# *.yml    text eol=lf
+# *.yaml   text eol=lf
+# *.xml    text eol=lf
+# *.config text eol=lf
+
+# Scripts
+*.sh     text eol=lf
+*.ps1    text eol=lf
+
+# Binary files (no diff, no CRLF conversion)
+*.dll    binary
+*.exe    binary
+*.pdb    binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+
+# Prevent Git from trying to diff large binary files
+*.zip    binary
+*.tar    binary
+*.gz     binary
+*.7z     binary
+
+# Keep NuGet packages as binary
+*.nupkg  binary
+
+# Treat SQL files as text with LF endings
+*.sql    text eol=lf
