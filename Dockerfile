@@ -3,7 +3,11 @@ FROM mcr.microsoft.com/devcontainers/dotnet:2-10.0-noble
 # Install SQL Tools: SQLPackage and sqlcmd
 COPY /.devcontainer/mssql/installSQLtools.sh installSQLtools.sh
 RUN bash ./installSQLtools.sh \
-     && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+    && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+# To debug
+#RUN bash -c 'echo "Test 1234567890"'
+#RUN bash ./installSQLtools.sh
+#RUN bash apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
