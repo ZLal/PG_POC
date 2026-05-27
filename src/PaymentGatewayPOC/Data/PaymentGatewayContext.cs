@@ -23,62 +23,110 @@ public class PaymentGatewayContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configure relationships
-        modelBuilder.Entity<Application>()
-            .HasOne(a => a.Organization)
-            .WithMany(o => o.Applications)
-            .HasForeignKey(a => a.OrganizationId)
-            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Organization>(entity =>
+        {
+            entity.HasKey(o => o.OrganizationId);
+            entity.Property(o => o.Name)
+                .IsRequired()
+                .HasMaxLength(255);
+        });
 
-        modelBuilder.Entity<Client>()
-            .HasOne(c => c.Organization)
-            .WithMany(o => o.Clients)
-            .HasForeignKey(c => c.OrganizationId)
-            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Application>(entity =>
+        {
+            entity.HasKey(a => a.ApplicationId);
+            entity.Property(a => a.OrganizationId).IsRequired();
+            entity.Property(a => a.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(a => a.ClientId).IsRequired();
+            entity.HasOne(a => a.Organization)
+                .WithMany(o => o.Applications)
+                .HasForeignKey(a => a.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        modelBuilder.Entity<Client>()
-            .HasOne(c => c.Application)
-            .WithMany(a => a.Clients)
-            .HasForeignKey(c => c.ApplicationId)
-            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Client>(entity =>
+        {
+            entity.HasKey(c => c.ClientId);
+            entity.Property(c => c.OrganizationId).IsRequired();
+            entity.Property(c => c.ApplicationId).IsRequired();
+            entity.Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(c => c.SecretKey)
+                .IsRequired();
+            entity.HasOne(c => c.Organization)
+                .WithMany(o => o.Clients)
+                .HasForeignKey(c => c.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(c => c.Application)
+                .WithMany(a => a.Clients)
+                .HasForeignKey(c => c.ApplicationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        modelBuilder.Entity<Transaction>()
-            .HasOne(t => t.Application)
-            .WithMany(a => a.Transactions)
-            .HasForeignKey(t => t.ApplicationId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Gateway>(entity =>
+        {
+            entity.HasKey(g => g.GatewayId);
+            entity.Property(g => g.Name)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(g => g.Status)
+                .IsRequired();
+        });
 
-        modelBuilder.Entity<Transaction>()
-            .HasOne(t => t.Gateway)
-            .WithMany(g => g.Transactions)
-            .HasForeignKey(t => t.GatewayId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasKey(t => t.TransactionId);
+            entity.Property(t => t.ApplicationId).IsRequired();
+            entity.Property(t => t.GatewayId).IsRequired();
+            entity.Property(t => t.Amount)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+            entity.Property(t => t.Status)
+                .IsRequired();
+            entity.HasOne(t => t.Application)
+                .WithMany(a => a.Transactions)
+                .HasForeignKey(t => t.ApplicationId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(t => t.Gateway)
+                .WithMany(g => g.Transactions)
+                .HasForeignKey(t => t.GatewayId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
-        modelBuilder.Entity<ApplicationGateway>()
-            .HasKey(ag => new { ag.ApplicationId, ag.GatewayId });
+        modelBuilder.Entity<ApplicationGateway>(entity =>
+        {
+            entity.HasKey(ag => new { ag.ApplicationId, ag.GatewayId });
+            entity.HasOne(ag => ag.Application)
+                .WithMany(a => a.ApplicationGateways)
+                .HasForeignKey(ag => ag.ApplicationId)
+                .OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne(ag => ag.Gateway)
+                .WithMany(g => g.ApplicationGateways)
+                .HasForeignKey(ag => ag.GatewayId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
 
-        modelBuilder.Entity<ApplicationGateway>()
-            .HasOne(ag => ag.Application)
-            .WithMany(a => a.ApplicationGateways)
-            .HasForeignKey(ag => ag.ApplicationId)
-            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<TransactionDetail>(entity =>
+        {
+            entity.HasKey(td => td.TransactionDetailId);
+            entity.Property(td => td.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(td => td.Message)
+                .HasMaxLength(1000);
+            entity.HasOne(td => td.Transaction)
+                .WithMany(t => t.TransactionDetails)
+                .HasForeignKey(td => td.TransactionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        modelBuilder.Entity<ApplicationGateway>()
-            .HasOne(ag => ag.Gateway)
-            .WithMany(g => g.ApplicationGateways)
-            .HasForeignKey(ag => ag.GatewayId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TransactionDetail>()
-            .HasOne(td => td.Transaction)
-            .WithMany(t => t.TransactionDetails)
-            .HasForeignKey(td => td.TransactionId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<ErrorLog>()
-            .HasOne(el => el.Transaction)
-            .WithMany(t => t.ErrorLogs)
-            .HasForeignKey(el => el.TransactionId)
-            .OnDelete(DeleteBehavior.SetNull);
+        modelBuilder.Entity<ErrorLog>(entity =>
+        {
+            entity.HasKey(el => el.LogId);
+            entity.Property(el => el.ErrorMessage)
+                .IsRequired();
+        });
     }
 }

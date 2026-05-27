@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace PaymentGatewayPOC.Models;
 
 public class ApplicationGateway
@@ -8,9 +6,8 @@ public class ApplicationGateway
 
     public Guid GatewayId { get; set; }
 
-    [ForeignKey("ApplicationId")]
+    // Navigation properties
     public Application? Application { get; set; }
 
-    [ForeignKey("GatewayId")]
     public Gateway? Gateway { get; set; }
 }
