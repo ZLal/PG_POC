@@ -7,11 +7,13 @@ This file helps AI coding agents quickly understand the workspace and follow pro
 - ASP.NET Core Web API proof-of-concept
 - Uses Entity Framework Core with SQLite
 - Follows a layered architecture:
+  - `Components/` for razor pages
   - `Controllers/` for HTTP endpoints
   - `Services/` for business logic
   - `Repositories/` for data access abstractions
   - `Models/` for entity definitions and validation attributes
   - `Data/` for EF Core `DbContext`
+  - `Migrations/` for EF Core DB migration
 
 ## Key conventions
 - Keep controllers thin; delegate business behavior to services.
