@@ -11,7 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PaymentGatewayPOC.Data.PaymentGatewayContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
+    // options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQLConnection"))
+);
 
 // Register repository pattern
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PaymentGatewayPOC.Data;
 
@@ -15,29 +16,31 @@ namespace PaymentGatewayPOC.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Application", b =>
                 {
                     b.Property<Guid>("ApplicationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AccessLocation")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("OrganizationId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ApplicationId");
 
@@ -46,32 +49,47 @@ namespace PaymentGatewayPOC.Migrations
                     b.ToTable("Applications");
                 });
 
+            modelBuilder.Entity("PaymentGatewayPOC.Models.ApplicationGateway", b =>
+                {
+                    b.Property<Guid>("ApplicationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GatewayId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ApplicationId", "GatewayId");
+
+                    b.HasIndex("GatewayId");
+
+                    b.ToTable("ApplicationGateways");
+                });
+
             modelBuilder.Entity("PaymentGatewayPOC.Models.Client", b =>
                 {
                     b.Property<Guid>("ClientId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<Guid>("OrganizationId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecretKey")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ClientId");
 
@@ -86,21 +104,19 @@ namespace PaymentGatewayPOC.Migrations
                 {
                     b.Property<Guid>("LogId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ErrorMessage")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("TransactionId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LogId");
-
-                    b.HasIndex("TransactionId");
 
                     b.ToTable("ErrorLogs");
                 });
@@ -109,16 +125,15 @@ namespace PaymentGatewayPOC.Migrations
                 {
                     b.Property<Guid>("GatewayId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("Status")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("GatewayId");
 
@@ -129,15 +144,15 @@ namespace PaymentGatewayPOC.Migrations
                 {
                     b.Property<Guid>("OrganizationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("OrganizationId");
 
@@ -148,26 +163,25 @@ namespace PaymentGatewayPOC.Migrations
                 {
                     b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("ApplicationId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastUpdatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("GatewayId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("LastUpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("TransactionId");
 
@@ -182,25 +196,25 @@ namespace PaymentGatewayPOC.Migrations
                 {
                     b.Property<Guid>("TransactionDetailId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Data")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("TransactionId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TransactionDetailId");
 
@@ -220,6 +234,25 @@ namespace PaymentGatewayPOC.Migrations
                     b.Navigation("Organization");
                 });
 
+            modelBuilder.Entity("PaymentGatewayPOC.Models.ApplicationGateway", b =>
+                {
+                    b.HasOne("PaymentGatewayPOC.Models.Application", "Application")
+                        .WithMany("ApplicationGateways")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PaymentGatewayPOC.Models.Gateway", "Gateway")
+                        .WithMany("ApplicationGateways")
+                        .HasForeignKey("GatewayId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+
+                    b.Navigation("Gateway");
+                });
+
             modelBuilder.Entity("PaymentGatewayPOC.Models.Client", b =>
                 {
                     b.HasOne("PaymentGatewayPOC.Models.Application", "Application")
@@ -237,16 +270,6 @@ namespace PaymentGatewayPOC.Migrations
                     b.Navigation("Application");
 
                     b.Navigation("Organization");
-                });
-
-            modelBuilder.Entity("PaymentGatewayPOC.Models.ErrorLog", b =>
-                {
-                    b.HasOne("PaymentGatewayPOC.Models.Transaction", "Transaction")
-                        .WithMany("ErrorLogs")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Transaction", b =>
@@ -273,13 +296,15 @@ namespace PaymentGatewayPOC.Migrations
                     b.HasOne("PaymentGatewayPOC.Models.Transaction", "Transaction")
                         .WithMany("TransactionDetails")
                         .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Application", b =>
                 {
+                    b.Navigation("ApplicationGateways");
+
                     b.Navigation("Clients");
 
                     b.Navigation("Transactions");
@@ -287,6 +312,8 @@ namespace PaymentGatewayPOC.Migrations
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Gateway", b =>
                 {
+                    b.Navigation("ApplicationGateways");
+
                     b.Navigation("Transactions");
                 });
 
@@ -299,8 +326,6 @@ namespace PaymentGatewayPOC.Migrations
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Transaction", b =>
                 {
-                    b.Navigation("ErrorLogs");
-
                     b.Navigation("TransactionDetails");
                 });
 #pragma warning restore 612, 618

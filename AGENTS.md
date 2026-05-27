@@ -39,8 +39,16 @@ This file helps AI coding agents quickly understand the workspace and follow pro
 - Run: `dotnet run --project src/PaymentGatewayPOC/PaymentGatewayPOC.csproj`
 
 ## Database
+- Initial migration: `dotnet ef migrations add InitialCreate`
 - Add a migration: `dotnet ef migrations add <MigrationName> --project src/PaymentGatewayPOC/PaymentGatewayPOC.csproj`
 - Apply migrations: `dotnet ef database update --project src/PaymentGatewayPOC/PaymentGatewayPOC.csproj`
+- Apply migrations: `dotnet ef database update`
+
+## Ef Tools
+- Add Ef Tool: `dotnet tool install --global dotnet-ef`
+- Package: `dotnet add package Microsoft.EntityFrameworkCore.Design`
+- Source: `https://learn.microsoft.com/en-us/ef/core/cli/dotnet`
+- Source: `https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli`
 
 ## What not to do
 - Do not invent test projects or files that are not present in the workspace.
