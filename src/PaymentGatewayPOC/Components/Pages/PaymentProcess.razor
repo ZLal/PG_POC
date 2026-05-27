@@ -18,6 +18,11 @@
     <div id="amount" class="form-control" style="background-color: #e9ecef;">@Amount.ToString("C")</div>
 </div>
 
+<div class="mb-3">
+    <label for="errorMsg" class="form-label">Error</label>
+    <label for="errorMsg" class="form-label">@ErrorMsg</label>
+</div>
+
 <div class="button-group">
     <button class="btn btn-success" @onclick="OnCompletedAsync">Completed</button>
     <button class="btn btn-danger" @onclick="OnFailedAsync">Failed</button>
@@ -29,14 +34,29 @@
     public Guid TransactionIdParam { get; set; }
 
     private Guid TransactionId { get; set; }
-    private decimal Amount { get; set; } = 100.00m;
+    private decimal Amount { get; set; } = 0m;
+
+    private string ErrorMsg { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         TransactionId = TransactionIdParam;
-        
-        var transaction = await TransactionService.GetTransactionByIdAsync(TransactionId);
-        Amount = transaction?.Amount ?? 0m;
+        try
+        {
+            Transaction? transaction = await TransactionService.GetTransactionByIdAsync(TransactionId);
+            if (transaction == null || transaction.Status != TransactionStatus.Pending)
+            {
+                ErrorMsg = "Transaction not found or not in pending status.";
+                return;
+            }
+            await TransactionService.UpdateTransactionStatusAsync(transaction.TransactionId, TransactionStatus.InPayment);
+            Amount = transaction?.Amount ?? 0m;
+        }
+        catch (Exception ex)
+        {
+            ErrorMsg = $"Error loading transaction: {ex.Message}";
+            return;
+        }
     }
 
     private async Task OnCompletedAsync()

@@ -1,5 +1,6 @@
 @page "/payment-status/{TransactionIdParam:guid}"
 @using PaymentGatewayPOC.Services.Interfaces
+@using PaymentGatewayPOC.Models
 @inject NavigationManager NavigationManager
 @inject ITransactionService TransactionService
 
@@ -19,7 +20,12 @@
 
 <div class="mb-3">
     <label for="status" class="form-label">Status</label>
-    <div id="status" class="form-control" style="background-color: #e9ecef;">@Status</div>
+    <div id="status" class="form-control" style="background-color: #e9ecef;">@Status.ToString()</div>
+</div>
+
+<div class="mb-3">
+    <label for="errorMsg" class="form-label">Error</label>
+    <label for="errorMsg" class="form-label">@ErrorMsg</label>
 </div>
 
 @code {
@@ -27,15 +33,29 @@
     public Guid TransactionIdParam { get; set; }
 
     private Guid TransactionId { get; set; }
-    private decimal Amount { get; set; } = 100.00m;
-    private string Status { get; set; } = "Pending";
+    private decimal Amount { get; set; } = 0m;
+    private TransactionStatus Status { get; set; } = TransactionStatus.Pending;
+
+    private string ErrorMsg { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         TransactionId = TransactionIdParam;
-
-        var transaction = await TransactionService.GetTransactionWithTransactionDetailsAsync(TransactionId);
-        Amount = transaction.Amount;
-        Status = transaction.Status.ToString();
+        try
+        {
+            Transaction? transaction = await TransactionService.GetTransactionByIdAsync(TransactionId);
+            if (transaction == null)
+            {
+                ErrorMsg = "Transaction not found.";
+                return;
+            }
+            Amount = transaction.Amount;
+            Status = transaction.Status;
+        }
+        catch (Exception ex)
+        {
+            ErrorMsg = $"Error loading transaction: {ex.Message}";
+            return;
+        }
     }
 }

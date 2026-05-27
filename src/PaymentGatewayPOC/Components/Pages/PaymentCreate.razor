@@ -1,4 +1,5 @@
 @page "/payment-create"
+@using PaymentGatewayPOC.Models
 @using PaymentGatewayPOC.Services.Interfaces
 @inject NavigationManager NavigationManager
 @inject IClientService ClientService
@@ -24,36 +25,52 @@
     <InputNumber id="amount" TValue="decimal" class="form-control" @bind-Value="Amount" />
 </div>
 
+<div class="mb-3">
+    <label for="errorMsg" class="form-label">Error</label>
+    <label for="errorMsg" class="form-label">@ErrorMsg</label>
+</div>
+
 <button class="btn btn-primary" @onclick="SubmitAsync">Submit</button>
 
 @code {
     private string ClientId { get; set; } = string.Empty;
     private string ClientSecret { get; set; } = string.Empty;
     private decimal Amount { get; set; }
+    private string ErrorMsg { get; set; } = string.Empty;
 
     private async Task SubmitAsync()
     {
-        var client = await ClientService.GetClientBySecretKeyAsync(Guid.Parse(ClientId), ClientSecret);
+        Client? client = await ClientService.GetClientBySecretKeyAsync(Guid.Parse(ClientId), ClientSecret);
         if (client == null)
         {
-            NavigationManager.NavigateTo("/not-found");
+            ErrorMsg = "Invalid client credentials.";
             return;
         }
 
-        var application = await ApplicationService.GetApplicationWithActiveGatewayAsync(client.ApplicationId);
+        Application? application = await ApplicationService.GetApplicationWithActiveGatewayAsync(client.ApplicationId);
         if (application == null || application.ApplicationGateways == null)
         {
-            NavigationManager.NavigateTo("/not-found");
+            ErrorMsg = "Application not found or no active gateway available.";
             return;
         }
 
-        var transaction = await TransactionService.CreateTransactionAsync(
-            application.ApplicationId,
-            application.ApplicationGateways.First().GatewayId,
-            Amount
-        );
+        Guid transactionId;
+        try
+        {
+            Transaction? transaction = await TransactionService.CreateTransactionAsync(
+                application.ApplicationId,
+                application.ApplicationGateways.First().GatewayId,
+                Amount
+            );
+            transactionId = transaction.TransactionId;
+        }
+        catch (Exception ex)
+        {
+            ErrorMsg = $"Error creating transaction: {ex.Message}";
+            return;
+        }
 
-        NavigationManager.NavigateTo($"/payment-process?TransactionIdParam={transaction.TransactionId}");
+        NavigationManager.NavigateTo($"/payment-process?TransactionIdParam={transactionId}");
         return;
     }
 }
