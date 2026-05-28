@@ -1,4 +1,5 @@
 @page "/testpage"
+@rendermode InteractiveServer
 @using PaymentGatewayPOC.Models
 @using PaymentGatewayPOC.Services.Interfaces
 @inject NavigationManager NavigationManager
@@ -28,10 +29,16 @@
 
 <div class="mb-3">
     <label for="msgData" class="form-label">MsgData</label>
-    <label for="msgData" class="form-label">@MsgData</label>
+    <textarea id="msgData" class="form-control" rows="10" readonly style="background-color: #e9ecef;">@MsgData</textarea>
 </div>
 
+<button class="btn btn-primary" @onclick="DelayTestAsync">Delay Test</button>
+
 <button class="btn btn-primary" @onclick="CreateOrgAsync">Create Org</button>
+<button class="btn btn-primary" @onclick="CreateAppAsync">Create App</button>
+<button class="btn btn-primary" @onclick="CreateClientAsync">Create Client</button>
+
+<button class="btn btn-primary" @onclick="DeleteClientAsync">Delete Client</button>
 
 @code {
 
@@ -47,6 +54,14 @@
     private void LogMsg(string msg)
     {
         MsgData += $"{DateTime.Now}: {msg}\n";
+    }
+
+    private async Task DelayTestAsync()
+    {
+        LogMsg("Starting delay test...");
+        await Task.Delay(1000);
+        LogMsg("Delay test completed.");
+        StateHasChanged();
     }
 
     private async Task CreateOrgAsync()
