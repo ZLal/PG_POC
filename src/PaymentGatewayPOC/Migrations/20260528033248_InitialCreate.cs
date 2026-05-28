@@ -115,12 +115,6 @@ namespace PaymentGatewayPOC.Migrations
                         principalTable: "Applications",
                         principalColumn: "ApplicationId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Clients_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalTable: "Organizations",
-                        principalColumn: "OrganizationId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -188,11 +182,6 @@ namespace PaymentGatewayPOC.Migrations
                 name: "IX_Clients_ApplicationId",
                 table: "Clients",
                 column: "ApplicationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Clients_OrganizationId",
-                table: "Clients",
-                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TransactionDetails_TransactionId",

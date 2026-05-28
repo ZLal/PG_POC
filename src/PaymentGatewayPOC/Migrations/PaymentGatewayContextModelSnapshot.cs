@@ -95,8 +95,6 @@ namespace PaymentGatewayPOC.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.HasIndex("OrganizationId");
-
                     b.ToTable("Clients");
                 });
 
@@ -261,15 +259,7 @@ namespace PaymentGatewayPOC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PaymentGatewayPOC.Models.Organization", "Organization")
-                        .WithMany("Clients")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Application");
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Transaction", b =>
@@ -320,8 +310,6 @@ namespace PaymentGatewayPOC.Migrations
             modelBuilder.Entity("PaymentGatewayPOC.Models.Organization", b =>
                 {
                     b.Navigation("Applications");
-
-                    b.Navigation("Clients");
                 });
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Transaction", b =>

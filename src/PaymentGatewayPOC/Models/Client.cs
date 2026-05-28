@@ -17,7 +17,6 @@ public class Client
     public DateTime? ExpiryDate { get; set; }
 
     // Navigation properties
-    public Organization? Organization { get; set; }
 
     public Application? Application { get; set; }
 }

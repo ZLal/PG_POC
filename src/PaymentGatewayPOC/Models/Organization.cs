@@ -10,5 +10,4 @@ public class Organization
 
     // Navigation properties
     public ICollection<Application> Applications { get; set; } = [];
-    public ICollection<Client> Clients { get; set; } = [];
 }

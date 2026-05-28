@@ -55,10 +55,6 @@ public class PaymentGatewayContext : DbContext
                 .HasMaxLength(255);
             entity.Property(c => c.SecretKey)
                 .IsRequired();
-            entity.HasOne(c => c.Organization)
-                .WithMany(o => o.Clients)
-                .HasForeignKey(c => c.OrganizationId)
-                .OnDelete(DeleteBehavior.Cascade);
             entity.HasOne(c => c.Application)
                 .WithMany(a => a.Clients)
                 .HasForeignKey(c => c.ApplicationId)
