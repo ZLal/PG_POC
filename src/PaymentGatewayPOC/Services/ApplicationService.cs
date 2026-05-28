@@ -66,6 +66,25 @@ public class ApplicationService : IApplicationService
         }
     }
 
+    public async Task<Application?> GetApplicationByNameAsync(Guid organizationId, string name)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching application with name: {name}");
+            var application = await _unitOfWork.Applications.GetApplicationByNameAsync(organizationId, name);
+            if (application == null)
+            {
+                _logger.LogWarning($"Application with name {name} not found");
+            }
+            return application;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching application with name {name}");
+            throw;
+        }
+    }
+
     public async Task<Application?> GetApplicationWithGatewayAsync(Guid applicationId)
     {
         try
@@ -109,7 +128,7 @@ public class ApplicationService : IApplicationService
         }
     }
 
-    public async Task<Application> CreateApplicationAsync(Guid organizationId, string name, Guid clientId)
+    public async Task<Application> CreateApplicationAsync(Guid organizationId, string name)
     {
         try
         {
@@ -125,7 +144,6 @@ public class ApplicationService : IApplicationService
                 ApplicationId = Guid.NewGuid(),
                 OrganizationId = organizationId,
                 Name = name,
-                ClientId = clientId,
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -142,7 +160,7 @@ public class ApplicationService : IApplicationService
         }
     }
 
-    public async Task<Application> UpdateApplicationAsync(Guid id, Guid clientId)
+    public async Task<Application> UpdateApplicationAsync(Guid id, string name)
     {
         try
         {
@@ -155,7 +173,7 @@ public class ApplicationService : IApplicationService
                 throw new KeyNotFoundException($"Application with ID {id} not found");
             }
 
-            application.ClientId = clientId;
+            application.Name = name;
             await _unitOfWork.Applications.UpdateAsync(application);
             await _unitOfWork.SaveChangesAsync();
 

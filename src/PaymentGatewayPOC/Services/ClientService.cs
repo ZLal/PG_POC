@@ -1,19 +1,16 @@
 using PaymentGatewayPOC.Models;
+using PaymentGatewayPOC.Utilities.Interfaces;
 using PaymentGatewayPOC.Repositories.Interfaces;
 using PaymentGatewayPOC.Services.Interfaces;
 
 namespace PaymentGatewayPOC.Services;
 
-public class ClientService : IClientService
+public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger, IRandomService randomService) : IClientService
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<ClientService> _logger;
-
-    public ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger)
-    {
-        _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
+    private const int SecretKeyLength = 32;
+    private const int ExpiryDays = 365; // Default expiry of 1 year
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ILogger<ClientService> _logger = logger;
 
     public async Task<IEnumerable<Client>> GetAllClientsAsync()
     {
@@ -82,12 +79,14 @@ public class ClientService : IClientService
         }
     }
 
-    public async Task<Client> CreateClientAsync(Guid organizationId, Guid applicationId, string name, string secretKey, DateTime? expiryDate = null)
+    public async Task<Client> CreateClientAsync(Guid organizationId, Guid applicationId, string name)
     {
         try
         {
             _logger.LogInformation($"Creating new client for organization ID: {organizationId}, application ID: {applicationId}");
             
+            string secretKey = randomService.GenerateRandomString(SecretKeyLength);
+            DateTime createdDate = DateTime.UtcNow;
             var client = new Client
             {
                 ClientId = Guid.NewGuid(),
@@ -95,8 +94,8 @@ public class ClientService : IClientService
                 ApplicationId = applicationId,
                 Name = name,
                 SecretKey = secretKey,
-                CreatedDate = DateTime.UtcNow,
-                ExpiryDate = expiryDate
+                CreatedDate = createdDate,
+                ExpiryDate = createdDate.AddDays(ExpiryDays)
             };
 
             await _unitOfWork.Clients.AddAsync(client);

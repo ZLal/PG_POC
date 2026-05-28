@@ -94,7 +94,7 @@ public class ApplicationsController : ControllerBase
                 return BadRequest("OrganizationId, Name, ClientId are required");
             }
 
-            var application = await _applicationService.CreateApplicationAsync(request.OrganizationId, request.Name, request.ClientId);
+            var application = await _applicationService.CreateApplicationAsync(request.OrganizationId, request.Name);
             return CreatedAtAction(nameof(GetApplicationById), new { id = application.ApplicationId }, application);
         }
         catch (Exception ex)
@@ -115,12 +115,12 @@ public class ApplicationsController : ControllerBase
     {
         try
         {
-            if (request.ClientId == Guid.Empty)
+            if (string.IsNullOrWhiteSpace(request.Name))
             {
-                return BadRequest("ClientId is required");
+                return BadRequest("Name is required");
             }
 
-            var application = await _applicationService.UpdateApplicationAsync(id, request.ClientId);
+            var application = await _applicationService.UpdateApplicationAsync(id, request.Name);
             return Ok(application);
         }
         catch (KeyNotFoundException)
@@ -187,5 +187,5 @@ public class CreateApplicationRequest
 
 public class UpdateApplicationRequest
 {
-    public Guid ClientId { get; set; } = Guid.Empty;
+    public string Name { get; set; } = string.Empty;
 }

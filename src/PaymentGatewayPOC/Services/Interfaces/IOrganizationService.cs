@@ -15,6 +15,16 @@ public interface IOrganizationService
     Task<Organization?> GetOrganizationByIdAsync(Guid id);
 
     /// <summary>
+    /// Get organization by name
+    /// </summary>
+    Task<Organization?> GetOrganizationByNameAsync(string name);
+
+    /// <summary>
+    /// Get organizations count
+    /// </summary>
+    Task<int> GetOrganizationCountAsync();
+
+    /// <summary>
     /// Create a new organization
     /// </summary>
     Task<Organization> CreateOrganizationAsync(string name);
@@ -28,9 +38,4 @@ public interface IOrganizationService
     /// Delete organization
     /// </summary>
     Task<bool> DeleteOrganizationAsync(Guid id);
-
-    /// <summary>
-    /// Get organizations count
-    /// </summary>
-    Task<int> GetOrganizationCountAsync();
 }

@@ -114,7 +114,7 @@ public class ClientsController : ControllerBase
                 return BadRequest("OrganizationId, ApplicationId, Name, and SecretKey are required");
             }
 
-            var client = await _clientService.CreateClientAsync(request.OrganizationId, request.ApplicationId, request.Name, request.SecretKey, request.ExpiryDate);
+            var client = await _clientService.CreateClientAsync(request.OrganizationId, request.ApplicationId, request.Name);
             return CreatedAtAction(nameof(GetClientById), new { id = client.ClientId }, client);
         }
         catch (Exception ex)

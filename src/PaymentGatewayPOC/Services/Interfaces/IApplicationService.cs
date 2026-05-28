@@ -20,6 +20,11 @@ public interface IApplicationService
     Task<IEnumerable<Application>> GetApplicationsByOrganizationAsync(Guid organizationId);
 
     /// <summary>
+    /// Get application by name
+    /// </summary>
+    Task<Application?> GetApplicationByNameAsync(Guid organizationId, string name);
+
+    /// <summary>
     /// Get application with their associated gateways
     /// </summary>
     Task<Application?> GetApplicationWithGatewayAsync(Guid applicationId);
@@ -32,12 +37,12 @@ public interface IApplicationService
     /// <summary>
     /// Create a new application
     /// </summary>
-    Task<Application> CreateApplicationAsync(Guid organizationId, string name, Guid clientId);
+    Task<Application> CreateApplicationAsync(Guid organizationId, string name);
 
     /// <summary>
     /// Update application
     /// </summary>
-    Task<Application> UpdateApplicationAsync(Guid id, Guid clientId);
+    Task<Application> UpdateApplicationAsync(Guid id, string name);
 
     /// <summary>
     /// Delete application

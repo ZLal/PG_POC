@@ -27,7 +27,7 @@ public interface IClientService
     /// <summary>
     /// Create a new client
     /// </summary>
-    Task<Client> CreateClientAsync(Guid organizationId, Guid applicationId, string name, string secretKey, DateTime? expiryDate = null);
+    Task<Client> CreateClientAsync(Guid organizationId, Guid applicationId, string name);
 
     /// <summary>
     /// Update client

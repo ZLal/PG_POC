@@ -50,6 +50,40 @@ public class OrganizationService : IOrganizationService
         }
     }
 
+    public async Task<Organization?> GetOrganizationByNameAsync(string name)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching organization with name: {name}");
+            var organization = await _unitOfWork.Organizations.GetOrganizationByNameAsync(name);
+            if (organization == null)
+            {
+                _logger.LogWarning($"Organization with name {name} not found");
+            }
+            return organization;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching organization with name {name}");
+            throw;
+        }
+    }
+
+    public async Task<int> GetOrganizationCountAsync()
+    {
+        try
+        {
+            _logger.LogInformation("Fetching organization count");
+            var count = await _unitOfWork.Organizations.CountAsync();
+            return count;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching organization count");
+            throw;
+        }
+    }
+
     public async Task<Organization> CreateOrganizationAsync(string name)
     {
         try
@@ -125,21 +159,6 @@ public class OrganizationService : IOrganizationService
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Error deleting organization with ID {id}");
-            throw;
-        }
-    }
-
-    public async Task<int> GetOrganizationCountAsync()
-    {
-        try
-        {
-            _logger.LogInformation("Fetching organization count");
-            var count = await _unitOfWork.Organizations.CountAsync();
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error fetching organization count");
             throw;
         }
     }

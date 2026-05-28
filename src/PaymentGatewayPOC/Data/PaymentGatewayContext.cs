@@ -29,6 +29,9 @@ public class PaymentGatewayContext : DbContext
             entity.Property(o => o.Name)
                 .IsRequired()
                 .HasMaxLength(255);
+            
+            entity.HasIndex(o => o.Name)
+                .IsUnique();
         });
 
         modelBuilder.Entity<Application>(entity =>
@@ -38,11 +41,13 @@ public class PaymentGatewayContext : DbContext
             entity.Property(a => a.Name)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(a => a.ClientId).IsRequired();
             entity.HasOne(a => a.Organization)
                 .WithMany(o => o.Applications)
                 .HasForeignKey(a => a.OrganizationId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasIndex(a => new { a.OrganizationId, a.Name })
+                .IsUnique();
         });
 
         modelBuilder.Entity<Client>(entity =>
@@ -59,6 +64,9 @@ public class PaymentGatewayContext : DbContext
                 .WithMany(a => a.Clients)
                 .HasForeignKey(c => c.ApplicationId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasIndex(c => new { c.ApplicationId, c.Name })
+                .IsUnique();
         });
 
         modelBuilder.Entity<Gateway>(entity =>
@@ -69,6 +77,9 @@ public class PaymentGatewayContext : DbContext
                 .HasMaxLength(255);
             entity.Property(g => g.Status)
                 .IsRequired();
+
+            entity.HasIndex(g => g.Name)
+                .IsUnique();
         });
 
         modelBuilder.Entity<Transaction>(entity =>

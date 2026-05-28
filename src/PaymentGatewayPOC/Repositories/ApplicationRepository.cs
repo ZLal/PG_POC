@@ -9,6 +9,12 @@ public class ApplicationRepository : Repository<Application>, IApplicationReposi
     {
     }
 
+    public async Task<Application?> GetApplicationByNameAsync(Guid organizationId, string name)
+    {
+        return await _context.Applications
+            .FirstOrDefaultAsync(a => a.Name == name && a.OrganizationId == organizationId);
+    }
+
     public async Task<Application?> GetApplicationWithGatewayAsync(Guid applicationId)
     {
         return await _context.Applications

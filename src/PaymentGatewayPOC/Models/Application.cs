@@ -8,8 +8,6 @@ public class Application
 
     public string Name { get; set; } = string.Empty;
 
-    public Guid ClientId { get; set; }
-
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
     // Navigation properties

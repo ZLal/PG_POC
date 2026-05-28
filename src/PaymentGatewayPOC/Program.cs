@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using PaymentGatewayPOC.Utilities;
+using PaymentGatewayPOC.Utilities.Interfaces;
 using PaymentGatewayPOC.Repositories;
 using PaymentGatewayPOC.Repositories.Interfaces;
 using PaymentGatewayPOC.Services;
@@ -24,6 +26,9 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IGatewayService, GatewayService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+
+// Register utilities
+builder.Services.AddScoped<IRandomService, RandomService>();
 
 // Register Blazor components
 builder.Services.AddRazorComponents()
