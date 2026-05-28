@@ -13,9 +13,9 @@ public class UnitOfWork : IUnitOfWork
     private readonly PaymentGatewayContext _context;
     private IDbContextTransaction? _transaction;
 
-    private IOrganizationRepository? _organizationRepository;
+    private IRepository<Organization>? _organizationRepository;
     private IApplicationRepository? _applicationRepository;
-    private IClientRepository? _clientRepository;
+    private IRepository<Client>? _clientRepository;
     private IRepository<Gateway>? _gatewayRepository;
     private IRepository<ApplicationGateway>? _applicationGatewayRepository;
     private IRepository<Transaction>? _transactionRepository;
@@ -27,14 +27,14 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
     }
 
-    public IOrganizationRepository Organizations =>
-        _organizationRepository ??= new OrganizationRepository(_context);
+    public IRepository<Organization> Organizations =>
+        _organizationRepository ??= new Repository<Organization>(_context);
 
     public IApplicationRepository Applications =>
         _applicationRepository ??= new ApplicationRepository(_context);
 
-    public IClientRepository Clients =>
-        _clientRepository ??= new ClientRepository(_context);
+    public IRepository<Client> Clients =>
+        _clientRepository ??= new Repository<Client>(_context);
 
     public IRepository<Gateway> Gateways =>
         _gatewayRepository ??= new Repository<Gateway>(_context);

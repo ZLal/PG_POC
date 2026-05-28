@@ -5,9 +5,9 @@ namespace PaymentGatewayPOC.Repositories.Interfaces;
 /// </summary>
 public interface IUnitOfWork : IAsyncDisposable
 {
-    IOrganizationRepository Organizations { get; }
+    IRepository<Models.Organization> Organizations { get; }
     IApplicationRepository Applications { get; }
-    IClientRepository Clients { get; }
+    IRepository<Models.Client> Clients { get; }
     IRepository<Models.Gateway> Gateways { get; }
     IRepository<Models.ApplicationGateway> ApplicationGateways { get; }
     IRepository<Models.Transaction> Transactions { get; }

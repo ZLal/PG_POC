@@ -102,4 +102,26 @@
             LogMsg(ex.Message);
         }
     }
+
+    private async Task DeleteClientAsync()
+    {
+        try
+        {
+            Client? client = await ClientService.GetClientByNameAsync(AppId, ClientName);
+            if (client != null)
+            {
+                await ClientService.DeleteClientAsync(client.ClientId);
+                LogMsg($"Client with ID: {ClientId} deleted");
+                ClientId = Guid.Empty;
+            }
+            else
+            {
+                LogMsg($"Client with name: {ClientName} not found");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMsg(ex.Message);
+        }
+    }
 }

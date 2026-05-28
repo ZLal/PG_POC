@@ -55,7 +55,8 @@ public class OrganizationService : IOrganizationService
         try
         {
             _logger.LogInformation($"Fetching organization with name: {name}");
-            var organization = await _unitOfWork.Organizations.GetOrganizationByNameAsync(name);
+            var organization = await _unitOfWork.Organizations.FindAsync(o => o.Name == name)
+                .ContinueWith(t => t.Result.FirstOrDefault());
             if (organization == null)
             {
                 _logger.LogWarning($"Organization with name {name} not found");

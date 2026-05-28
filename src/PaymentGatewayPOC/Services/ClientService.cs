@@ -84,7 +84,8 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
         try
         {
             _logger.LogInformation($"Fetching client by name: {name} for application ID: {applicationId}");
-            var client = await _unitOfWork.Clients.GetClientByNameAsync(applicationId, name);
+            var client = await _unitOfWork.Clients.FindAsync(c => c.ApplicationId == applicationId && c.Name == name)
+                .ContinueWith(t => t.Result.FirstOrDefault());
             if (client == null)
             {
                 _logger.LogWarning($"Client with name '{name}' not found for application ID {applicationId}");
