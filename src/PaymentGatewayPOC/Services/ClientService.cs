@@ -79,6 +79,25 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
         }
     }
 
+    public async Task<Client?> GetClientByNameAsync(Guid applicationId, string name)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching client by name: {name} for application ID: {applicationId}");
+            var client = await _unitOfWork.Clients.GetClientByNameAsync(applicationId, name);
+            if (client == null)
+            {
+                _logger.LogWarning($"Client with name '{name}' not found for application ID {applicationId}");
+            }
+            return client;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching client by name '{name}' for application ID {applicationId}");
+            throw;
+        }
+    }
+
     public async Task<Client> CreateClientAsync(Guid organizationId, Guid applicationId, string name)
     {
         try

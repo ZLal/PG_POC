@@ -25,6 +25,11 @@ public interface IClientService
     Task<IEnumerable<Client>> GetClientsByApplicationAsync(Guid applicationId);
 
     /// <summary>
+    /// Get client by name
+    /// </summary>
+    Task<Client?> GetClientByNameAsync(Guid applicationId, string name);
+
+    /// <summary>
     /// Create a new client
     /// </summary>
     Task<Client> CreateClientAsync(Guid organizationId, Guid applicationId, string name);

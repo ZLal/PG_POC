@@ -84,4 +84,22 @@
             LogMsg(ex.Message);
         }
     }
+
+    private async Task CreateClientAsync()
+    {
+        try
+        {
+            Client? client = await ClientService.GetClientByNameAsync(AppId, ClientName);
+            if (client == null)
+            {
+                client = await ClientService.CreateClientAsync(OrgId, AppId, ClientName);
+            }
+            ClientId = client.ClientId;
+            LogMsg($"Client retrived/created with ID: {ClientId}");
+        }
+        catch (Exception ex)
+        {
+            LogMsg(ex.Message);
+        }
+    }
 }

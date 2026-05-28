@@ -7,7 +7,7 @@ public interface IUnitOfWork : IAsyncDisposable
 {
     IOrganizationRepository Organizations { get; }
     IApplicationRepository Applications { get; }
-    IRepository<Models.Client> Clients { get; }
+    IClientRepository Clients { get; }
     IRepository<Models.Gateway> Gateways { get; }
     IRepository<Models.ApplicationGateway> ApplicationGateways { get; }
     IRepository<Models.Transaction> Transactions { get; }
