@@ -52,13 +52,32 @@ namespace PaymentGatewayPOC.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GatewayDetail",
+                columns: table => new
+                {
+                    GatewayDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GatewayId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Key = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
+                    Value = table.Column<string>(type: "varchar(5000)", unicode: false, maxLength: 5000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GatewayDetail", x => x.GatewayDetailId);
+                    table.ForeignKey(
+                        name: "FK_GatewayDetail_Gateways_GatewayId",
+                        column: x => x.GatewayId,
+                        principalTable: "Gateways",
+                        principalColumn: "GatewayId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
                 {
                     ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -102,7 +121,7 @@ namespace PaymentGatewayPOC.Migrations
                     OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SecretKey = table.Column<string>(type: "varchar(5000)", unicode: false, maxLength: 5000, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -154,7 +173,7 @@ namespace PaymentGatewayPOC.Migrations
                     TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Message = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Data = table.Column<string>(type: "varchar(5000)", unicode: false, maxLength: 5000, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -174,14 +193,33 @@ namespace PaymentGatewayPOC.Migrations
                 column: "GatewayId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_OrganizationId",
+                name: "IX_Applications_OrganizationId_Name",
                 table: "Applications",
-                column: "OrganizationId");
+                columns: new[] { "OrganizationId", "Name" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_ApplicationId",
+                name: "IX_Clients_ApplicationId_Name",
                 table: "Clients",
-                column: "ApplicationId");
+                columns: new[] { "ApplicationId", "Name" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GatewayDetail_GatewayId_Key",
+                table: "GatewayDetail",
+                columns: new[] { "GatewayId", "Key" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Gateways_Name",
+                table: "Gateways",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Organizations_Name",
+                table: "Organizations",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TransactionDetails_TransactionId",
@@ -210,6 +248,9 @@ namespace PaymentGatewayPOC.Migrations
 
             migrationBuilder.DropTable(
                 name: "ErrorLogs");
+
+            migrationBuilder.DropTable(
+                name: "GatewayDetail");
 
             migrationBuilder.DropTable(
                 name: "TransactionDetails");

@@ -12,7 +12,7 @@ using PaymentGatewayPOC.Data;
 namespace PaymentGatewayPOC.Migrations
 {
     [DbContext(typeof(PaymentGatewayContext))]
-    [Migration("20260528033248_InitialCreate")]
+    [Migration("20260529065254_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -31,23 +31,21 @@ namespace PaymentGatewayPOC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ApplicationId");
 
-                    b.HasIndex("OrganizationId");
+                    b.HasIndex("OrganizationId", "Name")
+                        .IsUnique();
 
                     b.ToTable("Applications");
                 });
@@ -92,11 +90,14 @@ namespace PaymentGatewayPOC.Migrations
 
                     b.Property<string>("SecretKey")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5000)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5000)");
 
                     b.HasKey("ClientId");
 
-                    b.HasIndex("ApplicationId");
+                    b.HasIndex("ApplicationId", "Name")
+                        .IsUnique();
 
                     b.ToTable("Clients");
                 });
@@ -138,7 +139,38 @@ namespace PaymentGatewayPOC.Migrations
 
                     b.HasKey("GatewayId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Gateways");
+                });
+
+            modelBuilder.Entity("PaymentGatewayPOC.Models.GatewayDetail", b =>
+                {
+                    b.Property<Guid>("GatewayDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GatewayId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5000)");
+
+                    b.HasKey("GatewayDetailId");
+
+                    b.HasIndex("GatewayId", "Key");
+
+                    b.ToTable("GatewayDetail");
                 });
 
             modelBuilder.Entity("PaymentGatewayPOC.Models.Organization", b =>
@@ -156,6 +188,9 @@ namespace PaymentGatewayPOC.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("OrganizationId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Organizations");
                 });
@@ -203,7 +238,9 @@ namespace PaymentGatewayPOC.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Data")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5000)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5000)");
 
                     b.Property<string>("Message")
                         .HasMaxLength(1000)
@@ -265,6 +302,17 @@ namespace PaymentGatewayPOC.Migrations
                     b.Navigation("Application");
                 });
 
+            modelBuilder.Entity("PaymentGatewayPOC.Models.GatewayDetail", b =>
+                {
+                    b.HasOne("PaymentGatewayPOC.Models.Gateway", "Gateway")
+                        .WithMany("GatewayDetails")
+                        .HasForeignKey("GatewayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gateway");
+                });
+
             modelBuilder.Entity("PaymentGatewayPOC.Models.Transaction", b =>
                 {
                     b.HasOne("PaymentGatewayPOC.Models.Application", "Application")
@@ -306,6 +354,8 @@ namespace PaymentGatewayPOC.Migrations
             modelBuilder.Entity("PaymentGatewayPOC.Models.Gateway", b =>
                 {
                     b.Navigation("ApplicationGateways");
+
+                    b.Navigation("GatewayDetails");
 
                     b.Navigation("Transactions");
                 });

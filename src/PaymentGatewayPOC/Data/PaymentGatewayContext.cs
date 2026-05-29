@@ -40,7 +40,7 @@ public class PaymentGatewayContext : DbContext
             entity.Property(a => a.OrganizationId).IsRequired();
             entity.Property(a => a.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(255);
             entity.HasOne(a => a.Organization)
                 .WithMany(o => o.Applications)
                 .HasForeignKey(a => a.OrganizationId)
@@ -59,6 +59,8 @@ public class PaymentGatewayContext : DbContext
                 .IsRequired()
                 .HasMaxLength(255);
             entity.Property(c => c.SecretKey)
+                .IsUnicode(false)
+                .HasMaxLength(5000)
                 .IsRequired();
             entity.HasOne(c => c.Application)
                 .WithMany(a => a.Clients)
@@ -80,6 +82,27 @@ public class PaymentGatewayContext : DbContext
 
             entity.HasIndex(g => g.Name)
                 .IsUnique();
+        });
+
+        modelBuilder.Entity<GatewayDetail>(entity =>
+        {
+            entity.HasKey(gd => gd.GatewayDetailId);
+            entity.Property(gd => gd.GatewayId).IsRequired();
+            entity.Property(gd => gd.Key)
+                .IsRequired()
+                .IsUnicode(false)
+                .HasMaxLength(255);
+            entity.Property(gd => gd.Value)
+                .IsUnicode(false)
+                .HasMaxLength(5000)
+                .IsRequired();
+            
+            entity.HasOne(gd => gd.Gateway)
+                .WithMany(g => g.GatewayDetails)
+                .HasForeignKey(gd => gd.GatewayId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasIndex(gd => new { gd.GatewayId, gd.Key });
         });
 
         modelBuilder.Entity<Transaction>(entity =>
@@ -123,6 +146,9 @@ public class PaymentGatewayContext : DbContext
                 .HasMaxLength(50);
             entity.Property(td => td.Message)
                 .HasMaxLength(1000);
+            entity.Property(td => td.Data)
+                .IsUnicode(false)
+                .HasMaxLength(5000);
             entity.HasOne(td => td.Transaction)
                 .WithMany(t => t.TransactionDetails)
                 .HasForeignKey(td => td.TransactionId)

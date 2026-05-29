@@ -9,6 +9,7 @@ public class Gateway
     public GatewayStatus Status { get; set; } = GatewayStatus.Active;
 
     // Navigation properties
+    public ICollection<GatewayDetail> GatewayDetails { get; set; } = [];
     public ICollection<Transaction> Transactions { get; set; } = [];
     public ICollection<ApplicationGateway> ApplicationGateways { get; set; } = [];
 }

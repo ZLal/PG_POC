@@ -14,6 +14,7 @@ This file helps AI coding agents quickly understand the workspace and follow pro
   - `Models/` for entity definitions and validation attributes
   - `Data/` for EF Core `DbContext`
   - `Migrations/` for EF Core DB migration
+  - `Utilities/` for Utility services
 
 ## Key conventions
 - Keep controllers thin; delegate business behavior to services.
