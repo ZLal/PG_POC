@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using PaymentGatewayPOC.Utilities;
 using PaymentGatewayPOC.Data;
 using PaymentGatewayPOC.Repositories.Interfaces;
 
@@ -22,6 +23,13 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<T?> GetByIdAsync(Guid id)
     {
         return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<T?> GetByIdWithChildrenAsync(Expression<Func<T, Guid>> idProperty, Guid id, Expression<Func<T, object>> includeProperty)
+    {
+        string propertyName = PropertyNameHelper.GetPropertyName<T, Guid>(idProperty);
+        return await _dbSet.Include(includeProperty)
+            .FirstOrDefaultAsync(e => EF.Property<Guid>(e, propertyName) == id);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -83,6 +91,7 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<int> CountAsync()
     {
+        _dbSet.Include("GatewayDetails");
         return await _dbSet.CountAsync();
     }
 

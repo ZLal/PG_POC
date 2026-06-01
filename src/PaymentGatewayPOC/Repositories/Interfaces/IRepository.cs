@@ -13,6 +13,11 @@ public interface IRepository<T> where T : class
     Task<T?> GetByIdAsync(Guid id);
 
     /// <summary>
+    /// Get entity by ID include children entities
+    /// </summary>
+    Task<T?> GetByIdWithChildrenAsync(Expression<Func<T, Guid>> idProperty, Guid id, Expression<Func<T, object>> includeProperty);
+
+    /// <summary>
     /// Get all entities
     /// </summary>
     Task<IEnumerable<T>> GetAllAsync();

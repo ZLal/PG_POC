@@ -15,6 +15,11 @@ public interface IGatewayService
     Task<Gateway?> GetGatewayByIdAsync(Guid id);
 
     /// <summary>
+    /// Get gateway by ID with related gateway details
+    /// </summary>
+    Task<Gateway?> GetGatewayByIdWithGatewayDetailsAsync(Guid id);
+
+    /// <summary>
     /// Get active gateways only
     /// </summary>
     Task<IEnumerable<Gateway>> GetActiveGatewaysAsync();

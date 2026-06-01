@@ -50,6 +50,25 @@ public class GatewayService : IGatewayService
         }
     }
 
+    public async Task<Gateway?> GetGatewayByIdWithGatewayDetailsAsync(Guid id)
+    {
+        try
+        {
+            _logger.LogInformation($"Fetching gateway with ID: {id} including details");
+            var gateway = await _unitOfWork.Gateways.GetByIdWithChildrenAsync(g => g.GatewayId, id, g => g.ApplicationGateways);
+            if (gateway == null)
+            {
+                _logger.LogWarning($"Gateway with ID {id} not found");
+            }
+            return gateway;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching gateway with ID {id} including details");
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<Gateway>> GetActiveGatewaysAsync()
     {
         try
