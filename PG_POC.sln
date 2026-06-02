@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayPOC", "src\PaymentGatewayPOC\PaymentGatewayPOC.csproj", "{49A12D8D-A6D4-172D-8B03-B0DCC81A1134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayPOC.Tests", "src\PaymentGatewayPOC.Tests\PaymentGatewayPOC.Tests.csproj", "{A46A68A5-7023-4E50-8B8C-84F062BA3DCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayPOC.UnitTests", "src\PaymentGatewayPOC.UnitTests\PaymentGatewayPOC.UnitTests.csproj", "{A46A68A5-7023-4E50-8B8C-84F062BA3DCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

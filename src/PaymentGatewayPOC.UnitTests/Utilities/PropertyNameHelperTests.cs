@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using PaymentGatewayPOC.Utilities;
 
-namespace PaymentGatewayPOC.Tests.Utilities;
+namespace PaymentGatewayPOC.UnitTests.Utilities;
 
 public class PropertyNameHelperTests
 {

@@ -41,16 +41,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        TransactionId = TransactionIdParam;
         try
         {
-            Transaction? transaction = await TransactionService.GetTransactionByIdAsync(TransactionId);
+            Transaction? transaction = await TransactionService.GetTransactionByIdAsync(TransactionIdParam);
             if (transaction == null || transaction.Status != TransactionStatus.Pending)
             {
                 ErrorMsg = "Transaction not found or not in pending status.";
                 return;
             }
             await TransactionService.UpdateTransactionStatusAsync(transaction.TransactionId, TransactionStatus.InPayment);
+            TransactionId = transaction.TransactionId;
             Amount = transaction?.Amount ?? 0m;
         }
         catch (Exception ex)
