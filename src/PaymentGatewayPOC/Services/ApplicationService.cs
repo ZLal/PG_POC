@@ -21,7 +21,7 @@ public class ApplicationService : IApplicationService
         {
             _logger.LogInformation("Fetching all applications");
             var applications = await _unitOfWork.Applications.GetAllAsync();
-            _logger.LogInformation($"Retrieved {applications.Count()} applications");
+            _logger.LogInformation("Retrieved {count} applications", applications.Count());
             return applications;
         }
         catch (Exception ex)
@@ -35,17 +35,17 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Fetching application with ID: {id}");
+            _logger.LogInformation("Fetching application with ID: {ApplicationId}", id);
             var application = await _unitOfWork.Applications.GetByIdAsync(id);
             if (application == null)
             {
-                _logger.LogWarning($"Application with ID {id} not found");
+                _logger.LogWarning("Application with ID {ApplicationId} not found", id);
             }
             return application;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching application with ID {id}");
+            _logger.LogError(ex, "Error fetching application with ID {ApplicationId}", id);
             throw;
         }
     }
@@ -54,14 +54,14 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Fetching applications for organization ID: {organizationId}");
+            _logger.LogInformation("Fetching applications for organization ID: {OrganizationId}", organizationId);
             var applications = await _unitOfWork.Applications.FindAsync(a => a.OrganizationId == organizationId);
-            _logger.LogInformation($"Retrieved {applications.Count()} applications for organization {organizationId}");
+            _logger.LogInformation("Retrieved {count} applications for organization {OrganizationId}", applications.Count(), organizationId);
             return applications;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching applications for organization {organizationId}");
+            _logger.LogError(ex, "Error fetching applications for organization {OrganizationId}", organizationId);
             throw;
         }
     }
@@ -70,17 +70,17 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Fetching application with name: {name}");
+            _logger.LogInformation("Fetching application with name: {ApplicationName}", name);
             var application = await _unitOfWork.Applications.GetApplicationByNameAsync(organizationId, name);
             if (application == null)
             {
-                _logger.LogWarning($"Application with name {name} not found");
+                _logger.LogWarning("Application with name {ApplicationName} not found", name);
             }
             return application;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching application with name {name}");
+            _logger.LogError(ex, "Error fetching application with name {ApplicationName}", name);
             throw;
         }
     }
@@ -89,17 +89,17 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Fetching application with gateways for application ID: {applicationId}");
+            _logger.LogInformation("Fetching application with gateways for application ID: {ApplicationId}", applicationId);
             var application = await _unitOfWork.Applications.GetApplicationWithGatewayAsync(applicationId);
             if (application == null)
             {
-                _logger.LogWarning($"Application with ID {applicationId} not found");
+                _logger.LogWarning("Application with ID {ApplicationId} not found", applicationId);
             }
             return application;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching application with gateways for application ID {applicationId}");
+            _logger.LogError(ex, "Error fetching application with gateways for application ID {ApplicationId}", applicationId);
             throw;
         }
     }
@@ -108,11 +108,11 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Fetching application with active gateways for application ID: {applicationId}");
+            _logger.LogInformation("Fetching application with active gateways for application ID: {ApplicationId}", applicationId);
             var application = await _unitOfWork.Applications.GetApplicationWithGatewayAsync(applicationId);
             if (application == null)
             {
-                _logger.LogWarning($"Application with ID {applicationId} not found");
+                _logger.LogWarning("Application with ID {ApplicationId} not found", applicationId);
             }
             else
             {
@@ -123,7 +123,7 @@ public class ApplicationService : IApplicationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching application with active gateways for application ID {applicationId}");
+            _logger.LogError(ex, "Error fetching application with active gateways for application ID {ApplicationId}", applicationId);
             throw;
         }
     }
@@ -137,7 +137,7 @@ public class ApplicationService : IApplicationService
                 _logger.LogWarning("Application name is required");
                 throw new ArgumentException("Application name is required", nameof(name));
             }
-            _logger.LogInformation($"Creating new application for organization ID: {organizationId}");
+            _logger.LogInformation("Creating new application for organization ID: {OrganizationId}", organizationId);
             
             var application = new Application
             {
@@ -150,12 +150,12 @@ public class ApplicationService : IApplicationService
             await _unitOfWork.Applications.AddAsync(application);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Application created successfully with ID: {application.ApplicationId}");
+            _logger.LogInformation("Application created successfully with ID: {ApplicationId}", application.ApplicationId);
             return application;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error creating application for organization {organizationId}");
+            _logger.LogError(ex, "Error creating application for organization {OrganizationId}", organizationId);
             throw;
         }
     }
@@ -164,12 +164,12 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Updating application with ID: {id}");
+            _logger.LogInformation("Updating application with ID: {ApplicationId}", id);
             
             var application = await _unitOfWork.Applications.GetByIdAsync(id);
             if (application == null)
             {
-                _logger.LogWarning($"Application with ID {id} not found for update");
+                _logger.LogWarning("Application with ID {ApplicationId} not found for update", id);
                 throw new KeyNotFoundException($"Application with ID {id} not found");
             }
 
@@ -177,12 +177,12 @@ public class ApplicationService : IApplicationService
             await _unitOfWork.Applications.UpdateAsync(application);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Application with ID {id} updated successfully");
+            _logger.LogInformation("Application with ID {ApplicationId} updated successfully", id);
             return application;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error updating application with ID {id}");
+            _logger.LogError(ex, "Error updating application with ID {ApplicationId}", id);
             throw;
         }
     }
@@ -191,24 +191,24 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _logger.LogInformation($"Deleting application with ID: {id}");
+            _logger.LogInformation("Deleting application with ID: {ApplicationId}", id);
             
             var result = await _unitOfWork.Applications.DeleteAsync(id);
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
-                _logger.LogInformation($"Application with ID {id} deleted successfully");
+                _logger.LogInformation("Application with ID {ApplicationId} deleted successfully", id);
             }
             else
             {
-                _logger.LogWarning($"Application with ID {id} not found for deletion");
+                _logger.LogWarning("Application with ID {ApplicationId} not found for deletion", id);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error deleting application with ID {id}");
+            _logger.LogError(ex, "Error deleting application with ID {ApplicationId}", id);
             throw;
         }
     }

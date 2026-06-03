@@ -21,7 +21,7 @@ public class TransactionService : ITransactionService
         {
             _logger.LogInformation("Fetching all transactions");
             var transactions = await _unitOfWork.Transactions.GetAllAsync();
-            _logger.LogInformation($"Retrieved {transactions.Count()} transactions");
+            _logger.LogInformation("Retrieved {TransactionCount} transactions", transactions.Count());
             return transactions;
         }
         catch (Exception ex)
@@ -35,17 +35,17 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Fetching transaction with ID: {id}");
+            _logger.LogInformation("Fetching transaction with ID: {TransactionId}", id);
             var transaction = await _unitOfWork.Transactions.GetByIdAsync(id);
             if (transaction == null)
             {
-                _logger.LogWarning($"Transaction with ID {id} not found");
+                _logger.LogWarning("Transaction with ID {TransactionId} not found", id);
             }
             return transaction;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching transaction with ID {id}");
+            _logger.LogError(ex, "Error fetching transaction with ID {TransactionId}", id);
             throw;
         }
     }
@@ -54,11 +54,11 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Fetching transaction with details for ID: {transactionId}");
+            _logger.LogInformation("Fetching transaction with details for ID: {TransactionId}", transactionId);
             var transaction = await _unitOfWork.Transactions.GetByIdAsync(transactionId);
             if (transaction == null)
             {
-                _logger.LogWarning($"Transaction with ID {transactionId} not found");
+                _logger.LogWarning("Transaction with ID {TransactionId} not found", transactionId);
                 throw new KeyNotFoundException($"Transaction with ID {transactionId} not found");
             }
 
@@ -69,7 +69,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching transaction with details for ID {transactionId}");
+            _logger.LogError(ex, "Error fetching transaction with details for ID {TransactionId}", transactionId);
             throw;
         }
     }
@@ -78,14 +78,14 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Fetching transactions for application ID: {applicationId}");
+            _logger.LogInformation("Fetching transactions for application ID: {ApplicationId}", applicationId);
             var transactions = await _unitOfWork.Transactions.FindAsync(t => t.ApplicationId == applicationId);
-            _logger.LogInformation($"Retrieved {transactions.Count()} transactions for application {applicationId}");
+            _logger.LogInformation("Retrieved {TransactionCount} transactions for application {ApplicationId}", transactions.Count(), applicationId);
             return transactions;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching transactions for application {applicationId}");
+            _logger.LogError(ex, "Error fetching transactions for application {ApplicationId}", applicationId);
             throw;
         }
     }
@@ -94,14 +94,14 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Fetching transactions for gateway ID: {gatewayId}");
+            _logger.LogInformation("Fetching transactions for gateway ID: {GatewayId}", gatewayId);
             var transactions = await _unitOfWork.Transactions.FindAsync(t => t.GatewayId == gatewayId);
-            _logger.LogInformation($"Retrieved {transactions.Count()} transactions for gateway {gatewayId}");
+            _logger.LogInformation("Retrieved {TransactionCount} transactions for gateway {GatewayId}", transactions.Count(), gatewayId);
             return transactions;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching transactions for gateway {gatewayId}");
+            _logger.LogError(ex, "Error fetching transactions for gateway {GatewayId}", gatewayId);
             throw;
         }
     }
@@ -110,7 +110,7 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Creating new transaction for application ID: {applicationId}, gateway ID: {gatewayId}, amount: {amount}");
+            _logger.LogInformation("Creating new transaction for application ID: {ApplicationId}, gateway ID: {GatewayId}, amount: {Amount}", applicationId, gatewayId, amount);
             
             var createdDate = DateTime.UtcNow;
             var transaction = new Transaction
@@ -127,12 +127,12 @@ public class TransactionService : ITransactionService
             await _unitOfWork.Transactions.AddAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Transaction created successfully with ID: {transaction.TransactionId}");
+            _logger.LogInformation("Transaction created successfully with ID: {TransactionId}", transaction.TransactionId);
             return transaction;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error creating transaction for application {applicationId}");
+            _logger.LogError(ex, "Error creating transaction for application {ApplicationId}", applicationId);
             throw;
         }
     }
@@ -141,12 +141,12 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Updating transaction status with ID: {id}, new status: {status}");
+            _logger.LogInformation("Updating transaction status with ID: {TransactionId}, new status: {Status}", id, status);
             
             var transaction = await _unitOfWork.Transactions.GetByIdAsync(id);
             if (transaction == null)
             {
-                _logger.LogWarning($"Transaction with ID {id} not found for update");
+                _logger.LogWarning("Transaction with ID {TransactionId} not found for update", id);
                 throw new KeyNotFoundException($"Transaction with ID {id} not found");
             }
 
@@ -155,12 +155,12 @@ public class TransactionService : ITransactionService
             await _unitOfWork.Transactions.UpdateAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Transaction with ID {id} status updated successfully");
+            _logger.LogInformation("Transaction with ID {TransactionId} status updated successfully", id);
             return transaction;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error updating transaction with ID {id}");
+            _logger.LogError(ex, "Error updating transaction with ID {TransactionId}", id);
             throw;
         }
     }
@@ -169,7 +169,7 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Adding transaction detail for transaction ID: {transactionId}");
+            _logger.LogInformation("Adding transaction detail for transaction ID: {TransactionId}", transactionId);
             
             var detail = new TransactionDetail
             {
@@ -184,12 +184,12 @@ public class TransactionService : ITransactionService
             await _unitOfWork.TransactionDetails.AddAsync(detail);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Transaction detail added successfully with ID: {detail.TransactionDetailId}");
+            _logger.LogInformation("Transaction detail added successfully with ID: {TransactionDetailId}", detail.TransactionDetailId);
             return detail;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error adding transaction detail for transaction {transactionId}");
+            _logger.LogError(ex, "Error adding transaction detail for transaction {TransactionId}", transactionId);
             throw;
         }
     }
@@ -198,7 +198,7 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogError($"Adding error log for transaction ID: {transactionId}, message: {errorMessage}");
+            _logger.LogError("Adding error log for transaction ID: {TransactionId}, message: {ErrorMessage}", transactionId, errorMessage);
             
             var errorLog = new ErrorLog
             {
@@ -215,7 +215,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error adding error log");
+            _logger.LogError(ex, "Error adding error log");
             throw;
         }
     }
@@ -224,14 +224,14 @@ public class TransactionService : ITransactionService
     {
         try
         {
-            _logger.LogInformation($"Fetching details for transaction ID: {transactionId}");
+            _logger.LogInformation("Fetching details for transaction ID: {TransactionId}", transactionId);
             var details = await _unitOfWork.TransactionDetails.FindAsync(td => td.TransactionId == transactionId);
-            _logger.LogInformation($"Retrieved {details.Count()} details for transaction {transactionId}");
+            _logger.LogInformation("Retrieved {DetailCount} details for transaction {TransactionId}", details.Count(), transactionId);
             return details;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching transaction details for transaction {transactionId}");
+            _logger.LogError(ex, "Error fetching transaction details for transaction {TransactionId}", transactionId);
             throw;
         }
     }
@@ -242,7 +242,7 @@ public class TransactionService : ITransactionService
         {
             _logger.LogInformation("Fetching all error logs");
             var errorLogs = await _unitOfWork.ErrorLogs.GetAllAsync();
-            _logger.LogInformation($"Retrieved {errorLogs.Count()} error logs");
+            _logger.LogInformation("Retrieved {ErrorLogCount} error logs", errorLogs.Count());
             return errorLogs;
         }
         catch (Exception ex)

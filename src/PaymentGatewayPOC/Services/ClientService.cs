@@ -18,7 +18,7 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
         {
             _logger.LogInformation("Fetching all clients");
             var clients = await _unitOfWork.Clients.GetAllAsync();
-            _logger.LogInformation($"Retrieved {clients.Count()} clients");
+            _logger.LogInformation("Retrieved {ClientCount} clients", clients.Count());
             return clients;
         }
         catch (Exception ex)
@@ -32,17 +32,17 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Fetching client with ID: {id}");
+            _logger.LogInformation("Fetching client with ID: {ClientId}", id);
             var client = await _unitOfWork.Clients.GetByIdAsync(id);
             if (client == null)
             {
-                _logger.LogWarning($"Client with ID {id} not found");
+                _logger.LogWarning("Client with ID {ClientId} not found", id);
             }
             return client;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching client with ID {id}");
+            _logger.LogError(ex, "Error fetching client with ID {ClientId}", id);
             throw;
         }
     }
@@ -51,14 +51,14 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Fetching clients for organization ID: {organizationId}");
+            _logger.LogInformation("Fetching clients for organization ID: {OrganizationId}", organizationId);
             var clients = await _unitOfWork.Clients.FindAsync(c => c.OrganizationId == organizationId);
-            _logger.LogInformation($"Retrieved {clients.Count()} clients for organization {organizationId}");
+            _logger.LogInformation("Retrieved {ClientCount} clients for organization {OrganizationId}", clients.Count(), organizationId);
             return clients;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching clients for organization {organizationId}");
+            _logger.LogError(ex, "Error fetching clients for organization {OrganizationId}", organizationId);
             throw;
         }
     }
@@ -67,14 +67,14 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Fetching clients for application ID: {applicationId}");
+            _logger.LogInformation("Fetching clients for application ID: {ApplicationId}", applicationId);
             var clients = await _unitOfWork.Clients.FindAsync(c => c.ApplicationId == applicationId);
-            _logger.LogInformation($"Retrieved {clients.Count()} clients for application {applicationId}");
+            _logger.LogInformation("Retrieved {ClientCount} clients for application {ApplicationId}", clients.Count(), applicationId);
             return clients;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching clients for application {applicationId}");
+            _logger.LogError(ex, "Error fetching clients for application {ApplicationId}", applicationId);
             throw;
         }
     }
@@ -83,18 +83,18 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Fetching client by name: {name} for application ID: {applicationId}");
+            _logger.LogInformation("Fetching client by name: {ClientName} for application ID: {ApplicationId}", name, applicationId);
             var client = await _unitOfWork.Clients.FindAsync(c => c.ApplicationId == applicationId && c.Name == name)
                 .ContinueWith(t => t.Result.FirstOrDefault());
             if (client == null)
             {
-                _logger.LogWarning($"Client with name '{name}' not found for application ID {applicationId}");
+                _logger.LogWarning("Client with name '{ClientName}' not found for application ID {ApplicationId}", name, applicationId);
             }
             return client;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching client by name '{name}' for application ID {applicationId}");
+            _logger.LogError(ex, "Error fetching client by name '{ClientName}' for application ID {ApplicationId}", name, applicationId);
             throw;
         }
     }
@@ -103,7 +103,7 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Creating new client for organization ID: {organizationId}, application ID: {applicationId}");
+            _logger.LogInformation("Creating new client for organization ID: {OrganizationId}, application ID: {ApplicationId}", organizationId, applicationId);
             
             string secretKey = randomService.GenerateRandomString(SecretKeyLength);
             DateTime createdDate = DateTime.UtcNow;
@@ -121,12 +121,12 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
             await _unitOfWork.Clients.AddAsync(client);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Client created successfully with ID: {client.ClientId}");
+            _logger.LogInformation("Client created successfully with ID: {ClientId}", client.ClientId);
             return client;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error creating client for organization {organizationId}");
+            _logger.LogError(ex, "Error creating client for organization {OrganizationId}", organizationId);
             throw;
         }
     }
@@ -135,12 +135,12 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Updating client with ID: {id}");
+            _logger.LogInformation("Updating client with ID: {ClientId}", id);
             
             var client = await _unitOfWork.Clients.GetByIdAsync(id);
             if (client == null)
             {
-                _logger.LogWarning($"Client with ID {id} not found for update");
+                _logger.LogWarning("Client with ID {ClientId} not found for update", id);
                 throw new KeyNotFoundException($"Client with ID {id} not found");
             }
 
@@ -149,12 +149,12 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
             await _unitOfWork.Clients.UpdateAsync(client);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Client with ID {id} updated successfully");
+            _logger.LogInformation("Client with ID {ClientId} updated successfully", id);
             return client;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error updating client with ID {id}");
+            _logger.LogError(ex, "Error updating client with ID {ClientId}", id);
             throw;
         }
     }
@@ -163,24 +163,24 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Deleting client with ID: {id}");
+            _logger.LogInformation("Deleting client with ID: {ClientId}", id);
             
             var result = await _unitOfWork.Clients.DeleteAsync(id);
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
-                _logger.LogInformation($"Client with ID {id} deleted successfully");
+                _logger.LogInformation("Client with ID {ClientId} deleted successfully", id);
             }
             else
             {
-                _logger.LogWarning($"Client with ID {id} not found for deletion");
+                _logger.LogWarning("Client with ID {ClientId} not found for deletion", id);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error deleting client with ID {id}");
+            _logger.LogError(ex, "Error deleting client with ID {ClientId}", id);
             throw;
         }
     }
@@ -189,12 +189,12 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Validating secret key for client ID: {clientId}");
+            _logger.LogInformation("Validating secret key for client ID: {ClientId}", clientId);
             
             var client = await _unitOfWork.Clients.GetByIdAsync(clientId);
             if (client == null)
             {
-                _logger.LogWarning($"Client with ID {clientId} not found for validation");
+                _logger.LogWarning("Client with ID {ClientId} not found for validation", clientId);
                 return false;
             }
 
@@ -202,14 +202,14 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
             
             if (!isValid)
             {
-                _logger.LogWarning($"Invalid secret key or expired client for ID {clientId}");
+                _logger.LogWarning("Invalid secret key or expired client for ID {ClientId}", clientId);
             }
 
             return isValid;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error validating secret key for client {clientId}");
+            _logger.LogError(ex, "Error validating secret key for client {ClientId}", clientId);
             throw;
         }
     }
@@ -218,18 +218,18 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
     {
         try
         {
-            _logger.LogInformation($"Fetching client by application for client ID: {clientId}");
+            _logger.LogInformation("Fetching client by application for client ID: {ClientId}", clientId);
             
             var client = await _unitOfWork.Clients.GetByIdAsync(clientId);
             if (client == null)
             {
-                _logger.LogWarning($"Client with ID {clientId} not found");
+                _logger.LogWarning("Client with ID {ClientId} not found", clientId);
                 return null;
             }
 
             if (client.SecretKey != secretKey || (client.ExpiryDate != null && client.ExpiryDate <= DateTime.UtcNow))
             {
-                _logger.LogWarning($"Invalid secret key or expired client for ID {clientId}");
+                _logger.LogWarning("Invalid secret key or expired client for ID {ClientId}", clientId);
                 return null;
             }
 
@@ -237,7 +237,7 @@ public class ClientService(IUnitOfWork unitOfWork, ILogger<ClientService> logger
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching client by application for ID {clientId}");
+            _logger.LogError(ex, "Error fetching client by application for ID {ClientId}", clientId);
             throw;
         }
     }

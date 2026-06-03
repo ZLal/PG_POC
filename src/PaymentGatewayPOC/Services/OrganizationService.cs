@@ -21,7 +21,7 @@ public class OrganizationService : IOrganizationService
         {
             _logger.LogInformation("Fetching all organizations");
             var organizations = await _unitOfWork.Organizations.GetAllAsync();
-            _logger.LogInformation($"Retrieved {organizations.Count()} organizations");
+            _logger.LogInformation("Retrieved {Count} organizations", organizations.Count());
             return organizations;
         }
         catch (Exception ex)
@@ -35,17 +35,17 @@ public class OrganizationService : IOrganizationService
     {
         try
         {
-            _logger.LogInformation($"Fetching organization with ID: {id}");
+            _logger.LogInformation("Fetching organization with ID: {Id}", id);
             var organization = await _unitOfWork.Organizations.GetByIdAsync(id);
             if (organization == null)
             {
-                _logger.LogWarning($"Organization with ID {id} not found");
+                _logger.LogWarning("Organization with ID {Id} not found", id);
             }
             return organization;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching organization with ID {id}");
+            _logger.LogError(ex, "Error fetching organization with ID {Id}", id);
             throw;
         }
     }
@@ -54,18 +54,18 @@ public class OrganizationService : IOrganizationService
     {
         try
         {
-            _logger.LogInformation($"Fetching organization with name: {name}");
+            _logger.LogInformation("Fetching organization with name: {Name}", name);
             var organization = await _unitOfWork.Organizations.FindAsync(o => o.Name == name)
                 .ContinueWith(t => t.Result.FirstOrDefault());
             if (organization == null)
             {
-                _logger.LogWarning($"Organization with name {name} not found");
+                _logger.LogWarning("Organization with name {Name} not found", name);
             }
             return organization;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching organization with name {name}");
+            _logger.LogError(ex, "Error fetching organization with name {Name}", name);
             throw;
         }
     }
@@ -89,7 +89,7 @@ public class OrganizationService : IOrganizationService
     {
         try
         {
-            _logger.LogInformation($"Creating new organization with name: {name}");
+            _logger.LogInformation("Creating new organization with name: {Name}", name);
             
             var organization = new Organization
             {
@@ -101,12 +101,12 @@ public class OrganizationService : IOrganizationService
             await _unitOfWork.Organizations.AddAsync(organization);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Organization created successfully with ID: {organization.OrganizationId}");
+            _logger.LogInformation("Organization created successfully with ID: {Id}", organization.OrganizationId);
             return organization;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error creating organization with name: {name}");
+            _logger.LogError(ex, "Error creating organization with name: {Name}", name);
             throw;
         }
     }
@@ -115,12 +115,12 @@ public class OrganizationService : IOrganizationService
     {
         try
         {
-            _logger.LogInformation($"Updating organization with ID: {id}");
+            _logger.LogInformation("Updating organization with ID: {Id}", id);
             
             var organization = await _unitOfWork.Organizations.GetByIdAsync(id);
             if (organization == null)
             {
-                _logger.LogWarning($"Organization with ID {id} not found for update");
+                _logger.LogWarning("Organization with ID {Id} not found for update", id);
                 throw new KeyNotFoundException($"Organization with ID {id} not found");
             }
 
@@ -128,12 +128,12 @@ public class OrganizationService : IOrganizationService
             await _unitOfWork.Organizations.UpdateAsync(organization);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Organization with ID {id} updated successfully");
+            _logger.LogInformation("Organization with ID {Id} updated successfully", id);
             return organization;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error updating organization with ID {id}");
+            _logger.LogError(ex, "Error updating organization with ID {Id}", id);
             throw;
         }
     }
@@ -142,24 +142,24 @@ public class OrganizationService : IOrganizationService
     {
         try
         {
-            _logger.LogInformation($"Deleting organization with ID: {id}");
+            _logger.LogInformation("Deleting organization with ID: {Id}", id);
             
             var result = await _unitOfWork.Organizations.DeleteAsync(id);
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
-                _logger.LogInformation($"Organization with ID {id} deleted successfully");
+                _logger.LogInformation("Organization with ID {Id} deleted successfully", id);
             }
             else
             {
-                _logger.LogWarning($"Organization with ID {id} not found for deletion");
+                _logger.LogWarning("Organization with ID {Id} not found for deletion", id);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error deleting organization with ID {id}");
+            _logger.LogError(ex, "Error deleting organization with ID {Id}", id);
             throw;
         }
     }

@@ -21,7 +21,8 @@ public class GatewayService : IGatewayService
         {
             _logger.LogInformation("Fetching all gateways");
             var gateways = await _unitOfWork.Gateways.GetAllAsync();
-            _logger.LogInformation($"Retrieved {gateways.Count()} gateways");
+            var gatewaysCount = gateways.Count();
+            _logger.LogInformation("Retrieved {GatewaysCount} gateways", gatewaysCount);
             return gateways;
         }
         catch (Exception ex)
@@ -35,17 +36,17 @@ public class GatewayService : IGatewayService
     {
         try
         {
-            _logger.LogInformation($"Fetching gateway with ID: {id}");
+            _logger.LogInformation("Fetching gateway with ID: {GatewayId}", id);
             var gateway = await _unitOfWork.Gateways.GetByIdAsync(id);
             if (gateway == null)
             {
-                _logger.LogWarning($"Gateway with ID {id} not found");
+                _logger.LogWarning("Gateway with ID {GatewayId} not found", id);
             }
             return gateway;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching gateway with ID {id}");
+            _logger.LogError(ex, "Error fetching gateway with ID {GatewayId}", id);
             throw;
         }
     }
@@ -54,17 +55,17 @@ public class GatewayService : IGatewayService
     {
         try
         {
-            _logger.LogInformation($"Fetching gateway with ID: {id} including details");
+            _logger.LogInformation("Fetching gateway with ID: {GatewayId} including details", id);
             var gateway = await _unitOfWork.Gateways.GetByIdWithChildrenAsync(g => g.GatewayId, id, g => g.ApplicationGateways);
             if (gateway == null)
             {
-                _logger.LogWarning($"Gateway with ID {id} not found");
+                _logger.LogWarning("Gateway with ID {GatewayId} not found", id);
             }
             return gateway;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error fetching gateway with ID {id} including details");
+            _logger.LogError(ex, "Error fetching gateway with ID {GatewayId} including details", id);
             throw;
         }
     }
@@ -75,7 +76,8 @@ public class GatewayService : IGatewayService
         {
             _logger.LogInformation("Fetching active gateways");
             var gateways = await _unitOfWork.Gateways.FindAsync(g => g.Status == GatewayStatus.Active);
-            _logger.LogInformation($"Retrieved {gateways.Count()} active gateways");
+            var activeGatewaysCount = gateways.Count();
+            _logger.LogInformation("Retrieved {ActiveGatewaysCount} active gateways", activeGatewaysCount);
             return gateways;
         }
         catch (Exception ex)
@@ -89,7 +91,7 @@ public class GatewayService : IGatewayService
     {
         try
         {
-            _logger.LogInformation($"Creating new gateway with name: {name}, status: {status}");
+            _logger.LogInformation("Creating new gateway with name: {Name}, status: {Status}", name, status);
             
             var gateway = new Gateway
             {
@@ -101,12 +103,12 @@ public class GatewayService : IGatewayService
             await _unitOfWork.Gateways.AddAsync(gateway);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Gateway created successfully with ID: {gateway.GatewayId}");
+            _logger.LogInformation("Gateway created successfully with ID: {GatewayId}", gateway.GatewayId);
             return gateway;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error creating gateway with name: {name}");
+            _logger.LogError(ex, "Error creating gateway with name: {Name}", name);
             throw;
         }
     }
@@ -115,12 +117,12 @@ public class GatewayService : IGatewayService
     {
         try
         {
-            _logger.LogInformation($"Updating gateway with ID: {id}");
+            _logger.LogInformation("Updating gateway with ID: {GatewayId}", id);
             
             var gateway = await _unitOfWork.Gateways.GetByIdAsync(id);
             if (gateway == null)
             {
-                _logger.LogWarning($"Gateway with ID {id} not found for update");
+                _logger.LogWarning("Gateway with ID {GatewayId} not found for update", id);
                 throw new KeyNotFoundException($"Gateway with ID {id} not found");
             }
 
@@ -129,12 +131,12 @@ public class GatewayService : IGatewayService
             await _unitOfWork.Gateways.UpdateAsync(gateway);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation($"Gateway with ID {id} updated successfully");
+            _logger.LogInformation("Gateway with ID {GatewayId} updated successfully", id);
             return gateway;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error updating gateway with ID {id}");
+            _logger.LogError(ex, "Error updating gateway with ID {GatewayId}", id);
             throw;
         }
     }
@@ -143,24 +145,24 @@ public class GatewayService : IGatewayService
     {
         try
         {
-            _logger.LogInformation($"Deleting gateway with ID: {id}");
+            _logger.LogInformation("Deleting gateway with ID: {GatewayId}", id);
             
             var result = await _unitOfWork.Gateways.DeleteAsync(id);
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
-                _logger.LogInformation($"Gateway with ID {id} deleted successfully");
+                _logger.LogInformation("Gateway with ID {GatewayId} deleted successfully", id);
             }
             else
             {
-                _logger.LogWarning($"Gateway with ID {id} not found for deletion");
+                _logger.LogWarning("Gateway with ID {GatewayId} not found for deletion", id);
             }
 
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error deleting gateway with ID {id}");
+            _logger.LogError(ex, "Error deleting gateway with ID {GatewayId}", id);
             throw;
         }
     }
