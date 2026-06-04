@@ -6,8 +6,13 @@ using PaymentGatewayPOC.Repositories.Interfaces;
 using PaymentGatewayPOC.Services;
 using PaymentGatewayPOC.Services.Interfaces;
 using PaymentGatewayPOC.Components;
+using PaymentGatewayPOC.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add configuration for strongly typed settings
+builder.Services.Configure<AppSettings>(
+    builder.Configuration.GetSection("AppSettings"));
 
 // Add services to the container.
 builder.Services.AddControllers();
