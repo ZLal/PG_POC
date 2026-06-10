@@ -5,7 +5,7 @@ This file helps AI coding agents quickly understand the workspace and follow pro
 
 ## Project overview
 - ASP.NET Core Web API proof-of-concept
-- Uses Entity Framework Core with SQLite
+- Uses Entity Framework Core with MSSQL
 - Follows a layered architecture:
   - `Components/` for razor pages
   - `Controllers/` for HTTP endpoints

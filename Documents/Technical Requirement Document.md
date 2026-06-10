@@ -8,7 +8,7 @@
 ## 1. Technology Stack  
 - **Backend Framework**: .NET Core (latest LTS version)  
 - **Language**: C#  
-- **Database**: SQLite  
+- **Database**: MSSQL  
 - **ORM**: Entity Framework Core  
 - **Frontend**: ASP.NET Core MVC / Razor Pages (minimal UI)  
 - **API Layer**: RESTful APIs using ASP.NET Core Web API  
@@ -32,7 +32,7 @@
   - Repository pattern for database operations  
 
 - **Database Layer**  
-  - SQLite database with tables for Organizations, Applications, Gateways, Transactions, Logs etc.
+  - MSSQL database with tables for Organizations, Applications, Gateways, Transactions, Logs etc.
 
 ---
 
@@ -160,7 +160,7 @@
 
 ## 8. Acceptance Criteria (Technical)  
 - REST APIs functional with CRUD operations  
-- Entity Framework Core successfully maps SQLite schema  
+- Entity Framework Core successfully maps MSSQL schema  
 - Admin role can manage organizations, applications, and gateways  
 - Manager role restricted to application CRUD and reporting  
 - Dummy gateway available for sandbox testing  

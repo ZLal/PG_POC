@@ -1,6 +1,6 @@
 # Payment gateway POC
 
-Test Database - SQLite
+Test Database - MSSQL
 
 [Product Requirement Document](/Documents/Product%20Requirement%20Document.md)
 

@@ -20,6 +20,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PaymentGatewayPOC.Data.PaymentGatewayContext>(options =>
     // options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection"))
     options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQLConnection"))
+        //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
 );
 builder.Services.AddScoped<IMigrationService, MigrationService>();
 
