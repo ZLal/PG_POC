@@ -134,7 +134,7 @@ public class TransactionsController : ControllerBase
     {
         try
         {
-            var transaction = await _transactionService.UpdateTransactionStatusAsync(id, request.Status);
+            var transaction = await _transactionService.UpdateTransactionStatusAsync(id, DateTime.UtcNow, request.Status);
             return Ok(transaction);
         }
         catch (KeyNotFoundException)
@@ -162,8 +162,15 @@ public class TransactionsController : ControllerBase
             {
                 return BadRequest("Status is required");
             }
-
-            var detail = await _transactionService.AddTransactionDetailAsync(transactionId, request.Status, request.Message, request.Data);
+            TransactionDetail newTransactionDetail = new()
+            {
+                TransactionDetailId = Guid.Empty,
+                TransactionId = transactionId,
+                Status = request.Status,
+                Message = request.Message,
+                Data = request.Data
+            };
+            var detail = await _transactionService.AddTransactionDetailAsync(newTransactionDetail);
             return CreatedAtAction(nameof(GetTransactionDetailsAsync), new { transactionId }, detail);
         }
         catch (Exception ex)

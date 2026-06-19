@@ -12,9 +12,9 @@ public class Transaction
 
     public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
 
-    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedDate { get; set; } = DateTime.Today;
 
-    public DateTime LastUpdatedDate { get; set; } = DateTime.UtcNow;
+    public DateTime LastUpdatedDate { get; set; } = DateTime.Today;
 
     // Navigation properties
     public Application? Application { get; set; }

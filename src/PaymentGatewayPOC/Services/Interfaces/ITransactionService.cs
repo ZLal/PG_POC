@@ -37,12 +37,12 @@ public interface ITransactionService
     /// <summary>
     /// Update transaction status
     /// </summary>
-    Task<Transaction> UpdateTransactionStatusAsync(Guid id, TransactionStatus status);
+    Task<Transaction> UpdateTransactionStatusAsync(Guid id, DateTime lastUpdatedDate, TransactionStatus status);
 
     /// <summary>
     /// Add transaction detail/log
     /// </summary>
-    Task<TransactionDetail> AddTransactionDetailAsync(Guid transactionId, string status, string? message, string? data);
+    Task<TransactionDetail> AddTransactionDetailAsync(TransactionDetail detail);
 
     /// <summary>
     /// Add error log for transaction

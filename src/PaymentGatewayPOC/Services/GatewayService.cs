@@ -56,7 +56,7 @@ public class GatewayService : IGatewayService
         try
         {
             _logger.LogInformation("Fetching gateway with ID: {GatewayId} including details", id);
-            var gateway = await _unitOfWork.Gateways.GetByIdWithChildrenAsync(g => g.GatewayId, id, g => g.ApplicationGateways);
+            var gateway = await _unitOfWork.Gateways.GetByIdWithChildrenAsync(g => g.GatewayId, id, g => g.GatewayDetails);
             if (gateway == null)
             {
                 _logger.LogWarning("Gateway with ID {GatewayId} not found", id);

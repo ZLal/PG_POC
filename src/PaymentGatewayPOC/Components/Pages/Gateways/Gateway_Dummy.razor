@@ -1,0 +1,142 @@
+@* @page "/gatewaydummy"
+@rendermode InteractiveServer
+@using PaymentGatewayPOC.Models
+@using PaymentGatewayPOC.Services.Interfaces
+@inject NavigationManager NavigationManager
+@inject IOrganizationService OrganizationService
+@inject IApplicationService ApplicationService
+@inject IClientService ClientService
+@inject ITransactionService TransactionService
+
+<PageTitle>Dummy</PageTitle>
+
+<h1>Dummy</h1>
+
+<div class="mb-3">
+    <label for="orgId" class="form-label">Org ID</label>
+    <div id="orgId" class="form-control" style="background-color: #e9ecef;">@OrgId</div>
+</div>
+
+<div class="mb-3">
+    <label for="appId" class="form-label">App ID</label>
+    <div id="appId" class="form-control" style="background-color: #e9ecef;">@AppId</div>
+</div>
+
+<div class="mb-3">
+    <label for="clientId" class="form-label">Client ID</label>
+    <div id="clientId" class="form-control" style="background-color: #e9ecef;">@ClientId</div>
+</div>
+
+<div class="mb-3">
+    <label for="msgData" class="form-label">MsgData</label>
+    <textarea id="msgData" class="form-control" rows="10" readonly style="background-color: #e9ecef;">@MsgData</textarea>
+</div>
+
+<button class="btn btn-primary" @onclick="DelayTestAsync">Delay Test</button>
+
+<button class="btn btn-primary" @onclick="CreateOrgAsync">Create Org</button>
+<button class="btn btn-primary" @onclick="CreateAppAsync">Create App</button>
+<button class="btn btn-primary" @onclick="CreateClientAsync">Create Client</button>
+
+<button class="btn btn-primary" @onclick="DeleteClientAsync">Delete Client</button>
+
+@code {
+
+    private const string OrgName = "Test Org";
+    private const string AppName = "Test App";
+    private const string ClientName = "Test Client";
+
+    private Guid OrgId { get; set; } = Guid.Empty;
+    private Guid AppId { get; set; } = Guid.Empty;
+    private Guid ClientId { get; set; } = Guid.Empty;
+    
+    private string MsgData { get; set; } = string.Empty;
+    private void LogMsg(string msg)
+    {
+        MsgData += $"{DateTime.Now}: {msg}\n";
+    }
+
+    private async Task DelayTestAsync()
+    {
+        LogMsg("Starting delay test...");
+        await Task.Delay(1000);
+        LogMsg("Delay test completed.");
+        StateHasChanged();
+    }
+
+    private async Task CreateOrgAsync()
+    {
+        try
+        {
+            Organization? org = await OrganizationService.GetOrganizationByNameAsync(OrgName);
+            if (org == null)
+            {
+                org = await OrganizationService.CreateOrganizationAsync(OrgName);
+            }
+            OrgId = org.OrganizationId;
+            LogMsg($"Organization retrived/created with ID: {OrgId}");
+        }
+        catch (Exception ex)
+        {
+            LogMsg(ex.Message);
+        }
+    }
+
+    private async Task CreateAppAsync()
+    {
+        try
+        {
+            Application? app = await ApplicationService.GetApplicationByNameAsync(OrgId, AppName);
+            if (app == null)
+            {
+                app = await ApplicationService.CreateApplicationAsync(OrgId, AppName);
+            }
+            AppId = app.ApplicationId;
+            LogMsg($"Application retrived/created with ID: {AppId}");
+        }
+        catch (Exception ex)
+        {
+            LogMsg(ex.Message);
+        }
+    }
+
+    private async Task CreateClientAsync()
+    {
+        try
+        {
+            Client? client = await ClientService.GetClientByNameAsync(AppId, ClientName);
+            if (client == null)
+            {
+                client = await ClientService.CreateClientAsync(OrgId, AppId, ClientName);
+            }
+            ClientId = client.ClientId;
+            LogMsg($"Client retrived/created with ID: {ClientId}");
+        }
+        catch (Exception ex)
+        {
+            LogMsg(ex.Message);
+        }
+    }
+
+    private async Task DeleteClientAsync()
+    {
+        try
+        {
+            Client? client = await ClientService.GetClientByNameAsync(AppId, ClientName);
+            if (client != null)
+            {
+                await ClientService.DeleteClientAsync(client.ClientId);
+                LogMsg($"Client with ID: {ClientId} deleted");
+                ClientId = Guid.Empty;
+            }
+            else
+            {
+                LogMsg($"Client with name: {ClientName} not found");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMsg(ex.Message);
+        }
+    }
+} *@

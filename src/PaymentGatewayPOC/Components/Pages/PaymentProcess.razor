@@ -49,7 +49,7 @@
                 ErrorMsg = "Transaction not found or not in pending status.";
                 return;
             }
-            await TransactionService.UpdateTransactionStatusAsync(transaction.TransactionId, TransactionStatus.InPayment);
+            await TransactionService.UpdateTransactionStatusAsync(transaction.TransactionId, DateTime.UtcNow, TransactionStatus.InPayment);
             TransactionId = transaction.TransactionId;
             Amount = transaction?.Amount ?? 0m;
         }
@@ -62,19 +62,19 @@
 
     private async Task OnCompletedAsync()
     {
-        await TransactionService.UpdateTransactionStatusAsync(TransactionId, TransactionStatus.Paid);
+        await TransactionService.UpdateTransactionStatusAsync(TransactionId, DateTime.UtcNow, TransactionStatus.Paid);
         NavigationManager.NavigateTo($"/payment-status/{TransactionId}");
     }
 
     private async Task OnFailedAsync()
     {
-        await TransactionService.UpdateTransactionStatusAsync(TransactionId, TransactionStatus.Failed);
+        await TransactionService.UpdateTransactionStatusAsync(TransactionId, DateTime.UtcNow, TransactionStatus.Failed);
         NavigationManager.NavigateTo($"/payment-status/{TransactionId}");
     }
 
     private async Task OnCancelledAsync()
     {
-        await TransactionService.UpdateTransactionStatusAsync(TransactionId, TransactionStatus.Cancelled);
+        await TransactionService.UpdateTransactionStatusAsync(TransactionId, DateTime.UtcNow, TransactionStatus.Cancelled);
         NavigationManager.NavigateTo($"/payment-status/{TransactionId}");
     }
 }

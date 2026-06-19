@@ -137,7 +137,7 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<Transaction> UpdateTransactionStatusAsync(Guid id, TransactionStatus status)
+    public async Task<Transaction> UpdateTransactionStatusAsync(Guid id, DateTime lastUpdatedDate, TransactionStatus status)
     {
         try
         {
@@ -151,7 +151,7 @@ public class TransactionService : ITransactionService
             }
 
             transaction.Status = status;
-            transaction.LastUpdatedDate = DateTime.UtcNow;
+            transaction.LastUpdatedDate = lastUpdatedDate;
             await _unitOfWork.Transactions.UpdateAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 
@@ -165,21 +165,11 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<TransactionDetail> AddTransactionDetailAsync(Guid transactionId, string status, string? message, string? data)
+    public async Task<TransactionDetail> AddTransactionDetailAsync(TransactionDetail detail)
     {
         try
         {
-            _logger.LogInformation("Adding transaction detail for transaction ID: {TransactionId}", transactionId);
-            
-            var detail = new TransactionDetail
-            {
-                TransactionDetailId = Guid.NewGuid(),
-                TransactionId = transactionId,
-                Status = status,
-                Message = message,
-                Data = data,
-                CreatedDate = DateTime.UtcNow
-            };
+            _logger.LogInformation("Adding transaction detail for transaction ID: {TransactionId}", detail.TransactionId);
 
             await _unitOfWork.TransactionDetails.AddAsync(detail);
             await _unitOfWork.SaveChangesAsync();
@@ -189,7 +179,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error adding transaction detail for transaction {TransactionId}", transactionId);
+            _logger.LogError(ex, "Error adding transaction detail for transaction {TransactionId}", detail.TransactionId);
             throw;
         }
     }
