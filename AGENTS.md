@@ -48,8 +48,6 @@ This file helps AI coding agents quickly understand the workspace and follow pro
 ## Ef Tools
 - Add Ef Tool: `dotnet tool install --global dotnet-ef`
 - Package: `dotnet add package Microsoft.EntityFrameworkCore.Design`
-- Source: `https://learn.microsoft.com/en-us/ef/core/cli/dotnet`
-- Source: `https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli`
 
 ## What not to do
 - Do not invent test projects or files that are not present in the workspace.
@@ -57,7 +55,6 @@ This file helps AI coding agents quickly understand the workspace and follow pro
 - Do not assume a production deployment architecture; this is a POC.
 
 ## Additional documentation
-- `README.md`
 - `Documents/Coding Guideline.md`
 - `Documents/Product Requirement Document.md`
 - `Documents/Technical Requirement Document.md`

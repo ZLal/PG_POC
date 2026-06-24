@@ -2,6 +2,8 @@ using System.Text.Json;
 using PaymentGatewayPOC.Models;
 using PaymentGatewayPOC.Services.Interfaces;
 using PaymentGatewayPOC.Payments.Interfaces;
+using PaymentGatewayPOC.Extensions;
+using PaymentGatewayPOC.Exceptions;
 
 namespace PaymentGatewayPOC.Payments;
 
@@ -82,23 +84,42 @@ public class GatewayManager(ILogger<GatewayManager> logger, IGatewayService gate
             verificationException = ex;
             logger.LogError(ex, "Payment data verification failed in UpdateUserAuthorization");
         }
-        if (verificationException == null)
+        Exception? statusUpdateException = null;
+        try
         {
-            transaction.Status = TransactionStatus.Verified;
+            if (verificationException == null)
+            {
+                transaction.Status = TransactionStatus.Verified;
+                await UpdatePaymentStatusAsync(transaction, paymentData);
+            }
+            else
+            {
+                transaction.Status = TransactionStatus.Failed;
+                _ = await transactionService.AddErrorLogAsync(transaction.TransactionId, verificationException.Message);
+                throw verificationException;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            transaction.Status = TransactionStatus.Failed;
-            _ = await transactionService.AddErrorLogAsync(transaction.TransactionId, verificationException.Message);
+            statusUpdateException = ex;
         }
-        await UpdatePaymentStatusAsync(transaction, paymentData);
+        List<Exception> exceptions = [verificationException!, statusUpdateException!];
+        exceptions.RemoveAll(x => x == null);
+        if (exceptions.Count == 1)
+        {
+            throw exceptions[0];
+        }
+        else if (exceptions.Count == 2)
+        {
+            throw new MultipleException("Verification and Status update exception", exceptions);
+        }
     }
 
     private async Task UpdatePaymentStatusAsync(Transaction transaction, IList<KeyValuePair<string, string>> paymentData)
     {
         // TODO Check what happens when null
-        string status = paymentData.FirstOrDefault(x => x.Key == "Status").Value ?? "Unspecified";
-        string message = paymentData.FirstOrDefault(x => x.Key == "Message").Value ?? "Unspecified";
+        string status = paymentData.GetValueByKey("Status") ?? "Unspecified";
+        string message = paymentData.GetValueByKey("Message") ?? "Unspecified";
 
         string paymentDataStr = JsonSerializer.Serialize(paymentData);
         TransactionDetail transactionDetail = new()

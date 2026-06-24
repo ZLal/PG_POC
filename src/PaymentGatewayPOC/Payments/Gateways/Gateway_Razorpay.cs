@@ -4,6 +4,7 @@ using System.Text.Json;
 using Razorpay.Api; // Official Razorpay namespace
 using PaymentGatewayPOC.Models;
 using PaymentGatewayPOC.Payments.Interfaces;
+using PaymentGatewayPOC.Extensions;
 using System.Net;
 
 namespace PaymentGatewayPOC.Payments.Gateways;
@@ -17,26 +18,35 @@ public class Gateway_Razorpay(ILogger<Gateway_Razorpay> logger) : IPaymentGatewa
     public string Name => "Razorpay";
     public Version Version => new(0, 1, 0);
 
+    private const string ClientKey = nameof(ClientKey);
+    private const string ClientSecret = nameof(ClientSecret);
+    private const string Currency = nameof(Currency);
+    private const string OrderId = nameof(OrderId);
+
     public Task<IList<KeyValuePair<string, string>>> StartPaymentProcess(Gateway gateway, Transaction transaction)
     {
         logger.LogInformation("Starting payment process in {name} gateway", Name);
-        // TODO Fix this
-        throw new NotImplementedException();
-    }
 
-    public string? GetValueByKey(IList<KeyValuePair<string, string>> data, string key)
-    {
-        return data.SingleOrDefault(x => string.Equals(x.Key, key, StringComparison.InvariantCultureIgnoreCase)).Value;
+        string transactionId = transaction.TransactionId.ToString();
+        string currency = gateway.GatewayDetails.SingleOrDefault(x => x.Key == Currency)?.Value
+            ?? DefaultCurrency;
+        string clientKey = gateway.GatewayDetails.SingleOrDefault(x => x.Key == ClientKey)?.Value
+            ?? throw new Exception("Client key missing in gateway details");
+        string clientSecret = gateway.GatewayDetails.SingleOrDefault(x => x.Key == ClientSecret)?.Value
+            ?? throw new Exception("Client secret missing in gateway details");
+
+        string orderId = CreateOrder(clientKey, clientSecret, transactionId, transaction.Amount, currency);
+        return Task.FromResult<IList<KeyValuePair<string, string>>>([new KeyValuePair<string, string>("OrderId", orderId)]);
     }
 
     public Task VerifyDataAsync(Transaction transaction, IList<KeyValuePair<string, string>> paymentData)
     {
         logger.LogInformation("Data verification in {name} gateway", Name);
-        string paymentId = GetValueByKey(paymentData, nameof(paymentId))
+        string paymentId = paymentData.GetValueByKey(nameof(paymentId))
             ?? throw new Exception($"Failed to load {nameof(paymentId)} from paymentData");
-        string orderId = GetValueByKey(paymentData, nameof(orderId))
+        string orderId = paymentData.GetValueByKey(nameof(orderId))
             ?? throw new Exception($"Failed to load {nameof(orderId)} from paymentData");
-        string secret = GetValueByKey(paymentData, nameof(secret))
+        string secret = paymentData.GetValueByKey(nameof(secret))
             ?? throw new Exception($"Failed to load {nameof(secret)} from paymentData");
         VerifyPayment(paymentId, orderId, secret);
         return Task.CompletedTask;
@@ -45,8 +55,7 @@ public class Gateway_Razorpay(ILogger<Gateway_Razorpay> logger) : IPaymentGatewa
     public Task<TransactionStatus> GetTransactionStatusFromDataAsync(string updateEvent, IList<KeyValuePair<string, string>> paymentData)
     {
         logger.LogInformation("Getting transaction status from data in {name} gateway", Name);
-        //string status = paymentData.FirstOrDefault(x => x.Key == "Status").Value ?? "Unspecified";
-        string status = GetValueByKey(paymentData, nameof(status)) ?? "Unspecified";
+        string status = paymentData.GetValueByKey(nameof(status)) ?? "Unspecified";
         TransactionStatus transactionStatus = status switch
         {
             "created" => TransactionStatus.InPayment,
@@ -114,7 +123,7 @@ public class Gateway_Razorpay(ILogger<Gateway_Razorpay> logger) : IPaymentGatewa
         return new RazorpayClient(key, secret);
     }
 
-    public string CreateOrder(string key, string secret, string orderId, decimal amount, string currency = DefaultCurrency)
+    public string CreateOrder(string key, string secret, string orderId, decimal amount, string currency)
     {
         try
         {

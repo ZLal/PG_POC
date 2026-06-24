@@ -5,8 +5,6 @@ namespace PaymentGatewayPOC.Payments.Gateways;
 
 public class Gateway_Dummy(ILogger<Gateway_Dummy> logger) : IPaymentGatewayProcessor
 {
-    public const string DefaultCurrency = "INR";
-
     public string Name => "DummyPay";
     public Version Version => new(0, 1, 0);
 
