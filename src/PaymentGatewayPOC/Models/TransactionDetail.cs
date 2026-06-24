@@ -4,7 +4,7 @@ public class TransactionDetail
 {
     public Guid TransactionDetailId { get; set; }
 
-    public Guid? TransactionId { get; set; }
+    public Guid TransactionId { get; set; }
 
     public string Status { get; set; } = string.Empty;
 

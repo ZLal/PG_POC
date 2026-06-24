@@ -9,5 +9,5 @@ public class GatewayDetail
     public string Value { get; set; } = string.Empty;
 
     // Navigation property
-    public Gateway Gateway { get; set; } = null!;
+    public Gateway? Gateway { get; set; } = null;
 }
